@@ -13,14 +13,14 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $forkd-primary: mat.define-palette(mat.$light-green-palette, 400);
-$forkd-accent: mat.define-palette(mat.$grey-palette, 900);
+$forkd-accent: mat.define-palette(mat.$red-palette, 900);
 
 // The warn palette is optional (defaults to red).
 $forkd-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$forkd-theme: mat.define-dark-theme((
+$forkd-theme: mat.define-light-theme((
   color: (
     primary: $forkd-primary,
     accent: $forkd-accent,

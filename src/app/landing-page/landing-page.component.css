@@ -8,17 +8,6 @@
     width: 90%;
     background-color: hsla(78, 50%, 59%, 0.5); 
 }
-/* .restaurants{
-    max-height: 200%;
-    display: flex;
-    overflow-x: auto;
-}
-.restaurants mat-card {
-    width: 30%;
-    height: 97%;
-    line-height: 97%;
-    margin: 0.3%;
-} */
 
 .card-container {
     display: flex;
