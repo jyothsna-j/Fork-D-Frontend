@@ -1,0 +1,55 @@
+.intro{
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center */
+    padding: 2%;
+}
+.intro mat-card {
+    height: 70vh;
+    width: 90%;
+    background-color: hsla(78, 50%, 59%, 0.5); 
+    text-align: center;
+}
+.empty-cart-image {
+    width: 100%; /* Make the image width 100% of the card */
+    height: 70%; /* Ensure the image fills the height of the card */
+    object-fit: contain; /* Maintain aspect ratio and cover the card */
+    object-position: center; /* Center the image within the card */
+}
+.card-wrapper{
+    gap: 2%;
+}
+.card{
+    padding: 1.5%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+.cart-buttons{
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    border: 2px solid green;
+    border-radius: 8px;
+}
+mat-card-title{
+    text-align: center;
+}
+input{
+    width: 40px; /* Adjust input width */
+    height: 30px;
+    background: transparent;  /* Removes background */
+    border: none;  /* Removes border */
+    outline: none;  /* Removes outline when focused */
+    color: white;   /* Adjust text color (change as needed) */
+    text-align: center;
+}
+/* Remove arrows in Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Remove arrows in Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}

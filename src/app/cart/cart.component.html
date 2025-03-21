@@ -1,0 +1,51 @@
+<div *ngIf="isCartEmpty; else cartNotEmpty">
+    <div class = "intro"> 
+        <mat-card appearance="outlined">
+            <img src = "assets/empty-cart.png" class="empty-cart-image">
+            <h1> Oh no! Your cart seems to be empty :/</h1>
+        </mat-card>
+    </div>
+</div>
+  
+<ng-template #cartNotEmpty>
+    <h1>Placing your order</h1>
+    <div class="card-wrapper">
+        <mat-card class="card" *ngFor="let dish of cartData | keyvalue">
+            <mat-grid-list cols="3" rowHeight="11:1">
+                <mat-grid-tile>
+                    <mat-card-title>
+                        {{dish.key}}<br>
+                        ₹{{dish.value.price}}
+                    </mat-card-title>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <div class="cart-buttons">
+                        <button mat-icon-button (click) = "decrementCartItem(dish.key)">
+                            <mat-icon>remove_shopping_cart</mat-icon>
+                        </button>
+                        <input matInput type="number" [(ngModel)]="cartData[dish.key].quantity" onchange="handleChange(event)">
+                        <button mat-icon-button (click) = "incrementCartItem(dish.key)">
+                            <mat-icon>add_shopping_cart</mat-icon>
+                        </button>
+                    </div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    {{prices[dish.key]}}
+                </mat-grid-tile>
+            </mat-grid-list>
+        </mat-card>
+        <mat-card class="card">
+            <mat-grid-list cols="2" rowHeight="11:1">
+                <mat-grid-tile>
+                    <mat-card-title>
+                        <strong>TOTAL PRICE</strong>
+                    </mat-card-title>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    {{this.totalPrice}}
+                </mat-grid-tile>
+            </mat-grid-list>
+        </mat-card>
+    </div>
+    <button mat-raised-button color="primary">Buy Items Now</button>
+</ng-template>

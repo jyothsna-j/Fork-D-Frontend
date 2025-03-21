@@ -1,0 +1,15 @@
+<p>{{restaurantDetails.restaurantName}}</p>
+<mat-form-field>
+    <mat-label>Restaurant Cuisines</mat-label>
+    <mat-chip-grid #chipGrid aria-label="Add Cuisine">
+        <mat-chip-row *ngFor="let cuisine of cuisines(); trackBy: trackCuisines" 
+            (removed)="remove(cuisine)" [editable]="true" (edited)="edit(cuisine, $event)" [aria-description]="'press enter to edit ' + cuisine">
+          {{cuisine}}
+          <button matChipRemove [attr.aria-label]="'remove ' + cuisine"><mat-icon>cancel</mat-icon></button>
+        </mat-chip-row>
+
+      <input placeholder="Add Cuisine" [matChipInputFor]="chipGrid" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)"/>
+    </mat-chip-grid>
+    
+</mat-form-field>
+<button>Upload Cuisine</button>
