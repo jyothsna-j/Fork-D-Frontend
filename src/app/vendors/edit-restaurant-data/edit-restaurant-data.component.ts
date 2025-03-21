@@ -28,6 +28,7 @@ export class EditRestaurantDataComponent {
     console.log('Restaurant ID:', this.restaurantId);
     this.getDishes(this.restaurantId);
     this.getRestaurantDetails(this.restaurantId);
+    
   }
     
   getRestaurantDetails(id:number) {
@@ -35,7 +36,12 @@ export class EditRestaurantDataComponent {
       .subscribe((response:any)=>{
         this.restaurantDetails = response;
         console.log(this.restaurantDetails)
+        this.restaurantCuisines  = this.restaurantDetails.cuisine.split(",") || []
+        this.cuisines.set([...this.restaurantCuisines]);
     });
+
+    
+    console.log(this.cuisines)
   }
 
   getDishes(id:number) {
@@ -53,14 +59,10 @@ export class EditRestaurantDataComponent {
   //MAT CHIP CODE
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  
-  example:string[]  = this.restaurantDetails?.cuisine?.split(",") || []
-  readonly cuisines = signal<string[]>(this.example);
+  cuisines = signal<string[]>([]);
   readonly announcer = inject(LiveAnnouncer);
 
   add(event: MatChipInputEvent): void {
-    console.log(this.restaurantDetails.cuisines);
-    console.log(this.example)
     const value = (event.value || '').trim();
 
     // Add our fruit
@@ -107,5 +109,38 @@ export class EditRestaurantDataComponent {
 
   trackCuisines(index: number, cuisine: any): any {
     return cuisine ? cuisine : null;
+  }
+
+
+  
+  selectedFile!: File;
+  imageURL!: any;
+  
+  onFileSelected(event: any){
+    console.log(event);
+    this.selectedFile = event.target.files[0];
+  }
+
+  uploadFile() {
+    if (!this.selectedFile) {
+      alert('Please select a file first');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('logo', this.selectedFile);
+    const restaurantData = JSON.stringify(this.restaurantDetails);
+    formData.append('restaurant', new Blob([restaurantData], { type: 'application/json' }));
+    console.log(formData.getAll);
+
+    this.restaurantService.postImage(formData)
+  }
+
+  viewFile() {
+    this.restaurantService.fetchImage(1).subscribe((blob:any)=> {
+      this.imageURL = URL.createObjectURL(blob);
+
+    });
+    console.log(this.imageURL);
   }
 }

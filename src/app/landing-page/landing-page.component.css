@@ -63,8 +63,10 @@
   }
 
 .restaurant-pics{
-    /* width: 100%; Make the image width 100% of the card */
-    /* height: 50%; Ensure the image fills the height of the card */
+    width:fit-content; 
+    max-width: 100%; /* Prevents it from exceeding container */
+    height: auto; /* Maintains aspect ratio */
     object-fit: contain; /* Maintain aspect ratio and cover the card */
     object-position: center; /* Center the image within the card */
+    
 }

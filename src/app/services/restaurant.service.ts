@@ -27,14 +27,14 @@ export class RestaurantService {
   }
 
   postImage(formData: any){
-    let URL: string = this.baseURL + 'restaurants/upload'
-    this.http.post(URL, formData).subscribe({
+    let URL: string = this.baseURL + 'restaurants'
+    this.http.put(URL, formData).subscribe({
       next: (res) => console.log('Upload Successful', res),
       error: (err) => console.error('Upload Failed', err),
     })
   }
 
-  fetchImage() {
-    return this.http.get(`http://localhost:8080/restaurants/image`, { responseType: 'blob' });
+  fetchImage(id: number) {
+    return this.http.get('http://localhost:8080/restaurants/image/' + id, { responseType: 'blob' });
   }
 }

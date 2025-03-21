@@ -28,10 +28,14 @@
   
     <div class="card-wrapper" #scrollContainer>
       <mat-card class="card" *ngFor="let restaurant of restaurants">
-        <mat-card-title><strong>{{restaurant.restaurantName}}</strong></mat-card-title>
-        <mat-card-subtitle>{{restaurant.cuisine}}</mat-card-subtitle>
+        
         <mat-card-content>
-            <img src="assets/cropped-logo.png" class="restaurant-pics">
+            <mat-card-title><strong>{{restaurant.restaurantName}}</strong></mat-card-title>
+        <mat-card-subtitle>{{restaurant.cuisine}}</mat-card-subtitle>
+            <img [src]="restaurant.logo" *ngIf="restaurant.logo; else loading" class="restaurant-pics"/>
+            <ng-template #loading>
+                <div>Loading...</div>
+              </ng-template>
         </mat-card-content>
         <mat-card-actions>
             <button mat-raised-button color ="primary" (click)="openRestaurant(restaurant.restaurantId)">View Restaurant</button>
@@ -42,9 +46,3 @@
     <button (click)="scrollRight()" class="nav-btn right-btn">&gt;</button>
 </div>
 
-<h1>file upload test</h1>
-<input type = "file" (change)="onFileSelected($event)">
-<button mat-button (click)="uploadFile()">Upload</button>
-
-<button mat-raised-button (click)="viewFile()">View</button>
-<img [src]="imageURL" *ngIf="imageURL" />

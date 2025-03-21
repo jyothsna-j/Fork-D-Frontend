@@ -12,8 +12,6 @@ export class LandingPageComponent {
   @ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
 
   restaurants: any= [];
-  selectedFile!: File;
-  imageURL!: any;
 
   constructor(private restaurantService: RestaurantService, private router: Router, private sanitizer: DomSanitizer){} 
 
@@ -24,7 +22,28 @@ export class LandingPageComponent {
   getRestaurants(){
     this.restaurantService.getRestaurants()
       .subscribe((response:any)=>{
-        this.restaurants = response;
+        response.forEach((restaurant: any) => {
+          let imageBlob = new Blob([restaurant.logo.data]);
+
+          console.log(restaurant);
+          let formattedRestaurant = {
+            restaurantId: restaurant.restaurantId,
+            restaurantName: restaurant.restaurantName,
+            cuisine: restaurant.cuisine,
+            logo: restaurant.logo.data
+
+          };
+          console.log(formattedRestaurant)
+          if (restaurant.logo.data!= null){
+            this.restaurantService.fetchImage(restaurant.restaurantId).subscribe((blob:any)=> {
+              console.log("ere" + blob)
+              formattedRestaurant.logo = URL.createObjectURL(blob);
+        
+            });
+          }
+          console.log(formattedRestaurant)
+          this.restaurants.push(formattedRestaurant);
+        });
     });
   }
 
@@ -43,30 +62,5 @@ export class LandingPageComponent {
   }
 
   
-  onFileSelected(event: any){
-    console.log(event);
-    this.selectedFile = event.target.files[0];
-  }
-
-  uploadFile() {
-    if (!this.selectedFile) {
-      alert('Please select a file first');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
-    console.log(formData.getAll);
-
-    this.restaurantService.postImage(formData)
-  }
-
-  viewFile() {
-    this.restaurantService.fetchImage().subscribe((blob:any)=> {
-      this.imageURL = URL.createObjectURL(blob);
-
-    });
-    console.log(this.imageURL);
-  }
 
 }
