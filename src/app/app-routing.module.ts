@@ -5,6 +5,7 @@ import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail
 import { CartComponent } from './cart/cart.component';
 import { EditRestaurantDataComponent } from './vendors/edit-restaurant-data/edit-restaurant-data.component';
 import { HistoryComponent } from './vendors/history/history.component';
+import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component';
 
 const routes: Routes = [
   { path: 'restaurants', component: LandingPageComponent }, 
@@ -14,6 +15,7 @@ const routes: Routes = [
 
   { path: 'vendor/edit/:id', component: EditRestaurantDataComponent },
   { path: 'vendor/history', component: HistoryComponent },
+  { path: 'vendor/live-orders', component: LiveOrdersComponent },
 ];
 
 @NgModule({

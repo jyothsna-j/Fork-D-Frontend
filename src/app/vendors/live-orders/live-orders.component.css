@@ -1,0 +1,29 @@
+.sidenav-container {
+    height: 100vh;
+    display: flex;
+  }
+  
+  .details-panel {
+    width: 300px;
+    padding: 20px;
+  }
+  
+  .content {
+    padding: 20px;
+    flex-grow: 1;
+  }
+  
+  .mat-table {
+    width: 100%;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #1976d2;
+    cursor: pointer;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  

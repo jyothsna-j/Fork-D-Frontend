@@ -17,6 +17,10 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatChipsModule} from '@angular/material/chips';
+import { MatTableModule } from '@angular/material/table';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
@@ -51,7 +55,11 @@ import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component
     MatGridListModule,
     MatBadgeModule,
     MatFormFieldModule,
-    MatChipsModule
+    MatChipsModule,
+    MatTableModule,
+    MatSidenavModule,
+    MatSelectModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
