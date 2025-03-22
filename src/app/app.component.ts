@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserService } from './services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,23 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'forkd';
+
+  isLoggedIn: boolean = false;
+
+  constructor(private authService: UserService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.isLoggedIn = this.authService.isLoggedIn();
+  } 
+
+  goHome(){
+    this.router.navigate(['']);
+  }
+  openLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  openSignup() {
+    this.router.navigate(['/signup']);
+  }
 }

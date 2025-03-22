@@ -40,7 +40,7 @@ input{
     background: transparent;  /* Removes background */
     border: none;  /* Removes border */
     outline: none;  /* Removes outline when focused */
-    color: white;   /* Adjust text color (change as needed) */
+    color: black;   /* Adjust text color (change as needed) */
     text-align: center;
 }
 /* Remove arrows in Chrome, Safari, Edge, Opera */

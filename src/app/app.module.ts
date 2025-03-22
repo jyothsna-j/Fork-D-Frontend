@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import {MatToolbarModule } from '@angular/material/toolbar';
 import {MatButtonModule } from '@angular/material/button';
@@ -21,6 +22,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatInputModule} from '@angular/material/input';
 
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
@@ -28,6 +30,8 @@ import { CartComponent } from './cart/cart.component';
 import { EditRestaurantDataComponent } from './vendors/edit-restaurant-data/edit-restaurant-data.component';
 import { HistoryComponent } from './vendors/history/history.component';
 import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 
 @NgModule({
@@ -38,7 +42,9 @@ import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component
     CartComponent,
     EditRestaurantDataComponent,
     HistoryComponent,
-    LiveOrdersComponent
+    LiveOrdersComponent,
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +65,9 @@ import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component
     MatTableModule,
     MatSidenavModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

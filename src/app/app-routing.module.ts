@@ -6,11 +6,15 @@ import { CartComponent } from './cart/cart.component';
 import { EditRestaurantDataComponent } from './vendors/edit-restaurant-data/edit-restaurant-data.component';
 import { HistoryComponent } from './vendors/history/history.component';
 import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 const routes: Routes = [
   { path: 'restaurants', component: LandingPageComponent }, 
   { path: 'restaurant/:id', component: RestaurantDetailComponent },
   { path: 'cart', component: CartComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'signup', component: SignupComponent },
   { path: '', redirectTo: '/restaurants', pathMatch: 'full' },
 
   { path: 'vendor/edit/:id', component: EditRestaurantDataComponent },

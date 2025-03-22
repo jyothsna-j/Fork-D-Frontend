@@ -1,4 +1,15 @@
 <mat-toolbar color = "primary">
+  <button mat-button (click)="goHome()"><mat-icon>home</mat-icon></button>
   <h1>Fork'D</h1>
+  <div class = "buttons">
+      <div *ngIf="!isLoggedIn">
+        <button mat-raised-button color = "accent" (click)="openLogin()">Log In</button>
+        <button mat-raised-button color = "accent" (click)="openSignup()">Sign Up</button>
+      </div>
+    
+      <div *ngIf="isLoggedIn">
+        <button mat-raised-button color = "accent">Log Out</button>
+      </div>
+  </div>
 </mat-toolbar>
 <router-outlet></router-outlet>

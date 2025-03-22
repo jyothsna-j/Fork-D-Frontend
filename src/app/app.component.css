@@ -1,6 +1,13 @@
-img{
-    object-fit: contain;      
-}
 mat-toolbar h1{
     font: Battiecito;
+    text-align: center;
+    font-weight:bolder;
+    font-size: x-large;
+}
+.buttons{
+    position: absolute;
+    right: 3%;
+}
+.buttons button{
+    margin: 3%;
 }
