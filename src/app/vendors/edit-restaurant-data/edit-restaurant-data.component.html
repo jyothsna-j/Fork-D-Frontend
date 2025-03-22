@@ -1,11 +1,13 @@
 <p>{{restaurantDetails.restaurantName}}</p>
-<h1>file upload test</h1>
+<div class = "surrounding">
+<h1>Edit Restaurant Details</h1>
 <input type = "file" (change)="onFileSelected($event)">
 <button mat-button (click)="uploadFile()">Upload</button>
 
 <button mat-raised-button (click)="viewFile()">View</button>
 <br>
 <img [src]="imageURL" *ngIf="imageURL" />
+
 <mat-form-field>
     <mat-label>Restaurant Cuisines</mat-label>
     <mat-chip-grid #chipGrid aria-label="Add Cuisine">
@@ -20,3 +22,4 @@
     
 </mat-form-field>
 <button mat-raised-button color="primary">Upload Cuisine</button>
+</div>

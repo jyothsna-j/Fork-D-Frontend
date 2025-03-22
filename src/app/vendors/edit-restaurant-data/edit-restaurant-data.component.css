@@ -1,3 +1,8 @@
+.surrounding{
+    margin: 5%;
+    border: 5px solid lightgreen;
+    padding: 2%
+}
 mat-form-field{
     width: 50%;
 }

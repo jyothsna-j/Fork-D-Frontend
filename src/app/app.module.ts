@@ -23,6 +23,7 @@ import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail
 import { CartComponent } from './cart/cart.component';
 import { EditRestaurantDataComponent } from './vendors/edit-restaurant-data/edit-restaurant-data.component';
 import { HistoryComponent } from './vendors/history/history.component';
+import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { HistoryComponent } from './vendors/history/history.component';
     RestaurantDetailComponent,
     CartComponent,
     EditRestaurantDataComponent,
-    HistoryComponent
+    HistoryComponent,
+    LiveOrdersComponent
   ],
   imports: [
     BrowserModule,

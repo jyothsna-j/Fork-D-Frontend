@@ -137,7 +137,7 @@ export class EditRestaurantDataComponent {
   }
 
   viewFile() {
-    this.restaurantService.fetchImage(1).subscribe((blob:any)=> {
+    this.restaurantService.fetchImage(this.restaurantId).subscribe((blob:any)=> {
       this.imageURL = URL.createObjectURL(blob);
 
     });
