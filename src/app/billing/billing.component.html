@@ -1,0 +1,29 @@
+<mat-stepper>
+    <mat-step>
+        <ng-template matStepLabel>Sign In</ng-template>
+        <div *ngIf="isLoggedIn; else loginPrompt">
+            ✅ Welcome, {{ userName }}!
+          </div>
+      
+          <ng-template #loginPrompt>
+            ❌ You must be logged in to proceed.
+          </ng-template>
+          <br>
+          <button mat-raised-button matStepperNext [disabled]="!isLoggedIn">Next</button>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Enter the delivery address</ng-template>
+        <form [formGroup] = "address">
+            <mat-form-field appearance="outline">
+                <mat-label>Enter your address</mat-label>
+                <input matInput formControlName="address" required />
+                <mat-error *ngIf="address.get('address')?.invalid">Address is required</mat-error>
+            </mat-form-field>
+        </form>
+        <button mat-button matStepperNext>Next</button>
+    </mat-step>
+    <mat-step>
+        <ng-template matStepLabel>Make the payment</ng-template>
+        <button mat-raised-button color="primary" (click) = "makePayment()">Pay</button>
+    </mat-step>
+</mat-stepper>

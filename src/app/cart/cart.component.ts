@@ -45,4 +45,9 @@ export class CartComponent {
     this.prices = _.mapValues(this.cartData, (cartItem) => cartItem.price*cartItem.quantity);
     this.totalPrice = _.reduce(_.values(this.prices), (sum, price) => sum + price, 0);
   }
+
+  goToBilling(){
+    console.log(this.cartData);
+    this.router.navigate(['/billing'], {state: [this.restaurantId, this.cartData]});
+  }
 }

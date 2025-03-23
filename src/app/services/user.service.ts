@@ -29,7 +29,8 @@ export class UserService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('jwtToken');
+    console.log()
+    return !!localStorage.getItem('jwt');
   }
 
   getRole(): string | null {

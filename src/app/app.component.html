@@ -8,7 +8,7 @@
       </div>
     
       <div *ngIf="isLoggedIn">
-        <button mat-raised-button color = "accent">Log Out</button>
+        <button mat-raised-button color = "accent" (click) = "logout()">Log Out</button>
       </div>
   </div>
 </mat-toolbar>

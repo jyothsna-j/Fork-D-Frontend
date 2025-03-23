@@ -28,4 +28,9 @@ export class AppComponent {
   openSignup() {
     this.router.navigate(['/signup']);
   }
+
+  logout() {
+    this.authService.logout();
+    this.isLoggedIn = false;
+  }
 }
