@@ -20,10 +20,39 @@
 
       <input placeholder="Add Cuisine" [matChipInputFor]="chipGrid" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)" />
     </mat-chip-grid>
-    
 </mat-form-field>
 <button mat-raised-button color="primary">Upload Cuisine</button>
 
 <h4>Update Food Categories</h4>
+<mat-accordion multi="true">
+  <mat-expansion-panel *ngFor="let category of (categories$ | async) | keyvalue" [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ category.key }}
+      </mat-panel-title>
+      <mat-panel-description>
+        <button mat-icon-button (click)="editCategory(category.key)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteCategory(category.key)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
 
+    <div *ngFor="let dish of category.value">
+      🍽 {{ dish.dishName }} - ${{ dish.price }}
+      <button mat-icon-button (click)="editDish(category.key)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteDish(category.key)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+
+    <button mat-button (click)="addDish(category.key)">+ Add Dish</button>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<button mat-fab color="primary" (click)="addCategory()">+ Add Category</button>
 </div>
