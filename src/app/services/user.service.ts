@@ -1,23 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private baseURL: string = 'http://localhost:8080/auth';
+  private baseURL: string =  environment.NG_APP_BASE_URL + 'auth';
 
   constructor(private http: HttpClient) { }
 
   signup(user: any){
     console.log(user)
     let URL: string = this.baseURL + '/signup'
+    localStorage.setItem('user', user.username);
     return this.http.post(URL, user, { responseType: 'text' })
   }
 
   login(username: string, password: string){
     let URL: string = this.baseURL + '/login'
+    localStorage.setItem('user', username);
     return this.http.post(URL, { username, password }, { responseType: 'text' })
   }
 
@@ -27,6 +30,10 @@ export class UserService {
 
   getToken(): string | null {
     return localStorage.getItem('jwt');
+  }
+
+  getUsername(): string | null {
+    return localStorage.getItem('user')
   }
 
   isLoggedIn(): boolean {
@@ -52,5 +59,6 @@ export class UserService {
 
   logout() {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('user')
   }
 }

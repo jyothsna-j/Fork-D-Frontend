@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
 
-  baseURL : string = "http://localhost:8080/orders"
+  baseURL : string = environment.NG_APP_BASE_URL +"orders"
 
   constructor(private http: HttpClient) { }
 

@@ -19,6 +19,9 @@ export class OrdersComponent {
   ngOnInit(){
     const userId = this.userService.getUserId();
     this.refreshOrders(userId);
+    setTimeout(() => {
+      this.refreshOrders(userId);
+    }, 5000); 
   }
 
   refreshOrders(id: any){

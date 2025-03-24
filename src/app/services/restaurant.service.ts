@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RestaurantService {
 
-  baseURL : string = "http://localhost:8080/"
+  baseURL : string | undefined = environment.NG_APP_BASE_URL;
 
   constructor(private http: HttpClient) { }
 
@@ -35,6 +36,7 @@ export class RestaurantService {
   }
 
   fetchImage(id: number) {
-    return this.http.get('http://localhost:8080/restaurants/image/' + id, { responseType: 'blob' });
+    let URL: string = this.baseURL + 'restaurants/image/' + id
+    return this.http.get(URL, { responseType: 'blob' });
   }
 }

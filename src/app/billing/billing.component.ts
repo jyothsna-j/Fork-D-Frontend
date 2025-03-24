@@ -11,7 +11,7 @@ import { OrderService } from '../services/order.service';
   styleUrls: ['./billing.component.css']
 })
 export class BillingComponent {
-  userName = 'Jyothsna';
+  userName: any;
   restaurantId: any;
   isLoggedIn: boolean = false
   address: FormGroup;
@@ -34,7 +34,7 @@ export class BillingComponent {
     console.log(this.totalPrice);
 
     this.isLoggedIn = this.userService.isLoggedIn();
-    console.log(this.isLoggedIn);
+    this.userName = this.userService.getUsername();
   } 
 
   makePayment(){
