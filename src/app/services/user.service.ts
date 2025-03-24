@@ -10,9 +10,10 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  signup(username: string, password: string, role: string){
+  signup(user: any){
+    console.log(user)
     let URL: string = this.baseURL + '/signup'
-    return this.http.post(URL, { username, password, role }, { responseType: 'text' })
+    return this.http.post(URL, user, { responseType: 'text' })
   }
 
   login(username: string, password: string){
@@ -39,6 +40,14 @@ export class UserService {
     // Decode token payload (not secure for production use; consider a proper library)
     const payload = JSON.parse(atob(token.split('.')[1]));
     return payload.role;
+  }
+
+  getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    // Decode token payload (not secure for production use; consider a proper library)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.userId;
   }
 
   logout() {

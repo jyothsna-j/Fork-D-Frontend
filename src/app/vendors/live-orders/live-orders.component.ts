@@ -1,14 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-interface Order {
-  id: number;
-  customer: string;
-  items: { name: string; quantity: number }[];
-  total: number;
-  status: string;
-}
+import { OrderService } from 'src/app/services/order.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-live-orders',
@@ -16,49 +10,51 @@ interface Order {
   styleUrls: ['./live-orders.component.css'],
 })
 export class LiveOrdersComponent implements OnInit {
-  orders: Order[] = [];
+  orders: any[] = [];
   selectedStatus: string = '';
-  selectedOrder: Order | null = null;
+  selectedOrder: any | null = null;
   isPanelOpen = false;
 
-  orderStatuses = ['Pending', 'Preparing', 'Ready for delivery', 'Picked up for delivery','Reaching your destination', 'Completed'];
+  orderStatuses = ['PENDING', 'PREPARING', 'PREPARED', 'IN TRANSIT','DELIVERED'];
   displayedColumns: string[] = ['id', 'customer', 'total', 'status', 'update'];
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
+  constructor(private http: HttpClient, private snackBar: MatSnackBar, private orderService: OrderService, private userService: UserService) {}
 
   ngOnInit(): void {
+    let userId = this.userService.getUserId();
     this.fetchOrders();
     setInterval(() => this.fetchOrders(), 5000); // Polling every 5 sec
   }
 
   fetchOrders(): void {
-    this.http.get<Order[]>('http://localhost:3000/orders/live').subscribe((data) => {
+    this.orderService.getOrdersByRestaurantId(2).subscribe((data) => {
+      console.log(data);
       this.orders = data;
     });
   }
 
-  filteredOrders(): Order[] {
+  filteredOrders(): any[] {
     return this.selectedStatus
-      ? this.orders.filter((order) => order.status === this.selectedStatus)
+      ? this.orders.filter((order) => order.orderStatus === this.selectedStatus)
       : this.orders;
   }
 
-  updateStatus(order: Order): void {
-    this.http.put(`http://localhost:8080/orders/${order.id}/status`, { status: order.status }).subscribe(() => {
-      this.snackBar.open('Order status updated', 'OK', { duration: 2000 });
-    });
+  updateStatus(order: any): void {
+    this.orderService.updateOrderStatus(order.orderId, order.orderStatus);
+    this.snackBar.open('Order status updated', 'OK', { duration: 2000 })
   }
 
   getStatusColor(status: string): string {
     return {
-      'Pending': 'warn',
-      'Preparing': 'primary',
-      'Ready': 'accent',
-      'Completed': 'default',
+      'PENDING': 'warn',
+      'PREPARING': 'primary',
+      'PREPARED': 'accent',
+      'IN TRANSIT': 'accent',
+      'DELIVERED': 'primary',
     }[status] || 'default';
   }
 
-  openPanel(order: Order): void {
+  openPanel(order: any): void {
     this.selectedOrder = order;
     this.isPanelOpen = true;
   }

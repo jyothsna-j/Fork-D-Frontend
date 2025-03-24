@@ -9,6 +9,7 @@ import { LiveOrdersComponent } from './vendors/live-orders/live-orders.component
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { BillingComponent } from './billing/billing.component';
+import { OrdersComponent } from './orders/orders.component';
 
 const routes: Routes = [
   { path: 'restaurants', component: LandingPageComponent }, 
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'billing', component: BillingComponent },
+  { path: 'orders', component: OrdersComponent },
   { path: '', redirectTo: '/restaurants', pathMatch: 'full' },
 
   { path: 'vendor/edit/:id', component: EditRestaurantDataComponent },

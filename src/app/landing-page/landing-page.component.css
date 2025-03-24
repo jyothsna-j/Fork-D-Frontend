@@ -39,6 +39,7 @@
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    overflow-wrap: normal;
   }
   
   /* Navigation Buttons */
@@ -63,10 +64,10 @@
   }
 
 .restaurant-pics{
-    width:fit-content; 
-    max-width: 100%; /* Prevents it from exceeding container */
-    height: auto; /* Maintains aspect ratio */
-    object-fit: contain; /* Maintain aspect ratio and cover the card */
-    object-position: center; /* Center the image within the card */
+  width: 90%; /* Makes the image responsive within the card */
+  max-height: 15vh; /* Limits height to 20% of viewport height */
+  object-fit: contain; /* Ensures the entire image is visible without cropping */
+  object-position: center; /* Centers the image */
+  border-radius: 0.5rem; /* Slightly rounded corners */
     
 }

@@ -3,6 +3,7 @@ import { UserService } from '../services/user.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import _ from "lodash";
 import { Router } from '@angular/router';
+import { OrderService } from '../services/order.service';
 
 @Component({
   selector: 'app-billing',
@@ -11,22 +12,24 @@ import { Router } from '@angular/router';
 })
 export class BillingComponent {
   userName = 'Jyothsna';
+  restaurantId: any;
   isLoggedIn: boolean = false
   address: FormGroup;
   totalPrice: number = 0;
   Razorpay: any;
+  itemValues: any;
 
-  constructor( private userService: UserService, private fb: FormBuilder, private router: Router) {
+  constructor( private userService: UserService, private fb: FormBuilder, private router: Router, private orderService: OrderService) {
     this.address = this.fb.group({
       address: ['', Validators.required],
     });
   }
 
   ngOnInit() {
-    let restaurantId = history.state[0];
-    let tempData = history.state[1];
-    let prices = _.mapValues(tempData, (cartItem) => cartItem.price*cartItem.quantity);
-    console.log(prices);
+    this.restaurantId = history.state[0];
+    this.itemValues = history.state[1];
+    let prices = _.mapValues(this.itemValues, (cartItem) => cartItem.price*cartItem.quantity);
+    console.log(this.itemValues);
     this.totalPrice = _.reduce(_.values(prices),(sum, price) => sum + (Number(price) || 0), 0);
     console.log(this.totalPrice);
 
@@ -45,7 +48,22 @@ export class BillingComponent {
       handler: (response: any) => {
         console.log(response);
         if(response.razorpay_payment_id){
-          this.router.navigate(['/signup']);
+            var order = {
+              user: {
+                userId: this.userService.getUserId()
+              },
+              restaurant: {
+                restaurantId: this.restaurantId
+              },
+              amount: this.totalPrice,
+              orderStatus: "PENDING",
+              orderDate: Date.now(),
+              items: itemsConverter(this.itemValues)
+            }
+          
+            console.log(order);
+          this.orderService.postOrder(order);
+          this.router.navigate(['/orders']);
         }
       },
       prefill: {
@@ -65,3 +83,16 @@ export class BillingComponent {
   }
 
 }
+
+function itemsConverter(items: any) {
+
+  const orderedItems: any[] = Object.keys(items).map((key, index) => ({
+    orderedItemId: index + 1,
+    dish: { dishId: items[key].dishId },
+    price: items[key].price,
+    quantity: items[key].quantity
+  }));
+
+  return orderedItems;
+}
+

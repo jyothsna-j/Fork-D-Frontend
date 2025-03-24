@@ -1,1 +1,35 @@
-<p>orders works!</p>
+<h1>Current Orders</h1>
+<table mat-table [dataSource] = "liveOrders" class="mat-elevation-z8">
+    <!-- Order Id Column -->
+    <ng-container matColumnDef="orderId">
+        <th mat-header-cell *matHeaderCellDef>Order Id</th>
+        <td mat-cell *matCellDef="let order">{{ order.orderId }}</td>
+      </ng-container>
+
+      <!-- Restaurant Name Column -->
+      <ng-container matColumnDef="restaurantName">
+        <th mat-header-cell *matHeaderCellDef>Restaurant Name</th>
+        <td mat-cell *matCellDef="let order">{{ order.restaurant.restaurantName }}</td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+
+<h1>Past Orders</h1>
+<table mat-table [dataSource] = "pastOrders" class="mat-elevation-z8">
+    <!-- Order Id Column -->
+    <ng-container matColumnDef="orderId">
+        <th mat-header-cell *matHeaderCellDef>Order Id</th>
+        <td mat-cell *matCellDef="let order">{{ order.orderId }}</td>
+      </ng-container>
+
+      <!-- Restaurant Name Column -->
+      <ng-container matColumnDef="restaurantName">
+        <th mat-header-cell *matHeaderCellDef>RestaurantName</th>
+        <td mat-cell *matCellDef="let order">{{ order.restaurant.restaurantName }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

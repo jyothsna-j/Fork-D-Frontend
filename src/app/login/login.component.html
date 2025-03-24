@@ -1,1 +1,20 @@
-<p>login works!</p>
+<div class = "login-dabba">
+    <form [formGroup] = "loginForm" (ngSubmit)="onSubmit()">
+        <label>Username </label>
+        <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" required />
+            <mat-error *ngIf="loginForm.get('username')?.invalid">Name is required</mat-error>
+        </mat-form-field>
+        <br><br>
+        <label>Password </label>
+        <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" required />
+            <mat-icon matSuffix (click)="hidePassword = !hidePassword">visibility</mat-icon>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
+        </mat-form-field>
+        <br><br>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Log In</button>
+    </form>
+</div>

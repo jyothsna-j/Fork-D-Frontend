@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component} from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 
@@ -16,10 +16,13 @@ export class SignupComponent {
   constructor(private fb: FormBuilder, private authService: UserService, private router: Router) {
     this.signupForm = this.fb.group({
       name: ['', Validators.required],
+      username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      role: ["CUSTOMER"]
     }, { validator: this.passwordMatchValidator });
+    authService.getRole();
   }
 
   passwordMatchValidator(form: FormGroup) {
@@ -31,16 +34,19 @@ export class SignupComponent {
   onSubmit() {
     if (this.signupForm.valid) {
       console.log('Form Submitted', this.signupForm.value.name);
-      this.authService.signup(this.signupForm.value.name, this.signupForm.value.password, 'CUSTOMER').subscribe(
+      this.signupForm.removeControl('confirmPassword');
+      this.authService.signup(this.signupForm.value).subscribe(
         (token: string) => {
           this.authService.setToken(token);
-          alert('signed up succesfully');
-          this.router.navigate([''])
+          this.router.navigate(['']).then(() => {
+            window.location.reload();
+          });
         },
         error => {
           console.log('Signup failed. Try a different username.');
         }
       );
+      this.signupForm.addControl('confirmPassword', new FormControl('', Validators.required));
     }
   }
 }
