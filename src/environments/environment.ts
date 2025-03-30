@@ -1,5 +1,5 @@
 export const environment = {
     production: false,
-    NG_APP_BASE_URL: 'https://fork-d-backend-production.up.railway.app/'
+    NG_APP_BASE_URL: 'http://localhost:8080/'
 };
 
