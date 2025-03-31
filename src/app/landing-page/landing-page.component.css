@@ -1,79 +1,198 @@
-.intro{
-    display: flex;
-    justify-content: center; /* Horizontally center */
-    align-items: center; /* Vertically center */
-    padding: 2%;
-}
-.intro mat-card {
-    width: 90%;
-    background-color: hsla(78, 50%, 59%, 0.5); 
+.video-container {
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  z-index: -1;
 }
 
-video{
-  transform: rotate(270deg);
-  width: max-content;
-  height: max-content;
+.video-container video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%) rotate(270deg);
+  object-fit: contain;
+}
+
+.overlay{
+  position: absolute;
+  top:0%;
+  left: 50%;
+  min-width: 50%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5) !important; /* Black with 70% opacity */
+  display: flex; /* Enables flexbox */
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+}
+
+.intro-card{
+  background-color: rgba(0, 0, 0, 0) !important;
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  
+  border: none !important; /* Removes border */
+  box-shadow: none !important; /* Removes shadow */
+}
+
+.intro {
+  height: 100vh; /* Ensures it takes up full screen height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* --- After Scrolling, the restaurant section appears --- */
+.restaurant-section {
+  background-color: white; /* Removes the video background */
+  padding: 5% 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.restaurant-title {
+  padding: 0 10vw;
+  text-align: center;
+  font-size: large;
+  font-weight: 500;
+  margin-top: 2rem;
+  color: black;
 }
 
 .card-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 90%; 
-    margin: auto;
-  }
-  
-  .card-wrapper {
-    display: flex;
-    gap: 2%;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    white-space: nowrap;
-    width: 100%; 
-    padding: 1%;
-  }
-  
+  display: flex;
+  padding: 0 10vw;
+  gap: 2%;
+  overflow-x: auto;
+  align-items: center;
+  position: relative;
+  width: 90%; 
+  margin: auto;
+  scroll-behavior: smooth;
+  white-space: nowrap;
+}
+
   /* Hide scrollbar */
-  .card-wrapper::-webkit-scrollbar {
-    display: none;
-  }
+.card-container::-webkit-scrollbar {
+  display: none;
+}
+
   
-  .card {
-    min-width: 25%;  /*Each card takes 25% of the container width*/
-    max-width: 25%;
-    height: 30vh;  /*30% of viewport height*/
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    overflow-wrap: normal;
-  }
-  
-  /* Navigation Buttons */
-  .nav-btn {
-    position: absolute;
-    background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 1.5%;
-    font-size: 1.5vw;
-    border-radius: 50%;
-    z-index: 2;
-  }
-  
-  .left-btn {
-    left: -5%;
-  }
-  
-  .right-btn {
-    right: -5%;
-  }
+.card {
+  flex: 0 0 auto;
+  min-width: 20%;  /*Each card takes 25% of the container width*/
+  max-width: 20%;
+  height: 35vh;  /*30% of viewport height*/
+  margin-right: 5%;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  overflow-wrap: normal;
+}
+
+.restaurant-image{
+  position: relative;
+  width: 100%;
+  height: 30vh;
+  overflow: hidden;
+}
 
 .restaurant-pics{
-  width: 90%; /* Makes the image responsive within the card */
-  max-height: 15vh; /* Limits height to 20% of viewport height */
-  object-fit: contain; /* Ensures the entire image is visible without cropping */
-  object-position: center; /* Centers the image */
-  border-radius: 0.5rem; /* Slightly rounded corners */
-    
+  width: 100%; 
+  height: 100%;
+  object-fit: contain;
+  object-position: center; 
+}
+
+.view-res-button{
+  position: relative;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5%;
+  width: 90%;
+  text-transform: capitalize;
+  border: none;
+  outline: none;
+  background-color: black;
+  color:white;
+  transition: 0.5s;
+  cursor: pointer;
+  opacity: 0;
+
+}
+
+.card:hover .view-res-button{
+  opacity: 1;
+}
+
+.view-res-button:hover{
+  background: white;
+  color: black;
+  border: 2px solid black;
+
+}
+/* 
+.image-info{
+  width: 100%;
+  height: 100%;
+} */
+ .image-info h2{
+  text-transform: uppercase;
+  margin: 5px
+ }
+
+ .image-info p{
+  width: 100%;
+  line-height: 20px;
+  overflow: hidden;
+  opacity: 0.5;
+ }
+
+.nav-btn {
+  border: none;
+  width: 5vw;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: black; */
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 100%, rgb(109, 104, 104) 0%);
+  color: white;
+  cursor: pointer;
+  z-index: 2;
+  
+  transition: opacity 0.3s;
+}
+
+.left-btn {
+  left: 0;
+}
+
+.right-btn {
+  right: 0;
+}
+
+.left-btn,
+.right-btn {
+    opacity: 0.2;
+    color: black;
+}
+
+.left-btn:hover,
+.right-btn:hover {
+    opacity: 1;
 }
