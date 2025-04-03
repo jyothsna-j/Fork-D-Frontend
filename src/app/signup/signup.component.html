@@ -1,3 +1,4 @@
+<div class = "bg">
 <div class = "signup-dabba">
     <form [formGroup] = "signupForm" (ngSubmit)="onSubmit()">
         <label>Name </label>
@@ -39,6 +40,7 @@
             <mat-error *ngIf="signupForm.hasError('mismatch')">Passwords do not match</mat-error>
         </mat-form-field>
         <br>
-        <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+        <button mat-raised-button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
     </form>
+</div>
 </div>
