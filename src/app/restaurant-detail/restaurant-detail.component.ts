@@ -37,20 +37,27 @@ export class RestaurantDetailComponent {
   }
 
   getDishes(id:number) {
-    this.restaurantService.getDishes(id)
-      .subscribe((response:any)=>{
-        this.dishes = response;
-        console.log(this.dishes);
-        this.categorizedDishes = _.groupBy(this.dishes, "category");
-        this.categories = _.keys(this.categorizedDishes); 
-        console.log(this.categorizedDishes)
-        console.log(this.categories)
+    this.restaurantService.getDishes(id).subscribe({
+      next:(response) => {
+        if(response.status===204){
+          alert('no dishes found');
+        }
+        else{
+          this.dishes = response.body?.data;
+          this.categorizedDishes = _.groupBy(this.dishes, "category");
+          this.categories = _.keys(this.categorizedDishes);
 
-        this.cart = _.mapValues(_.keyBy(this.dishes, "dishName"), dish => ({
-          dishId: dish.dishId,
-          quantity: 0,
-          price: dish.price
-        }));
+          this.cart = _.mapValues(_.keyBy(this.dishes, "dishName"), dish => ({
+            dishId: dish.dishId,
+            quantity: 0,
+            price: dish.price
+          }));
+        }
+      },
+      error:(error) => {
+        console.log(error);
+        //TODO: add popup for handling
+      }
     });
   }
 

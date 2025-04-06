@@ -6,6 +6,8 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import {MatChipEditedEvent, MatChipInputEvent} from '@angular/material/chips';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { AddDishDialogComponent } from 'src/app/_modals/add-dish-dialog/add-dish-dialog.component';
 
 @Component({
   selector: 'app-edit-restaurant-data',
@@ -23,7 +25,7 @@ export class EditRestaurantDataComponent {
   private categoriesSubject = new BehaviorSubject<{ [key: string]: any[] }>({});
   categories$: Observable<{ [key: string]: any[] }> = this.categoriesSubject.asObservable();
 
-  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService) {
+  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -46,13 +48,24 @@ export class EditRestaurantDataComponent {
   }
 
   getDishes(id:number) {
-    this.restaurantService.getDishes(id)
-      .subscribe((response:any)=>{
-        this.dishes = response;
+    this.restaurantService.getDishes(id).subscribe({
+      next:(response) => {
+        this.dishes = response.body?.data.map((dish: any) => {
+          if (dish.dishImage && dish.dishImage.data && dish.dishImage.imageType) {
+            dish.display = `data:${dish.dishImage.imageType};base64,${dish.dishImage.data}`;
+          } else {
+            dish.display = null;
+          }
+          return dish;
+        });
         console.log(this.dishes);
         this.categorizedDishes = _.groupBy(this.dishes, "category");
         this.categoriesSubject.next(this.categorizedDishes);
-        console.log(this.categorizedDishes);
+      },
+      error:(error) => {
+        console.log(error);
+        //TODO: add popup for handling
+      }
     });
   }
 
@@ -65,7 +78,7 @@ export class EditRestaurantDataComponent {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
+    // Add our value
     if (value) {
       this.cuisines.update(cuisines => [...cuisines,  value]);
     }
@@ -90,13 +103,11 @@ export class EditRestaurantDataComponent {
   edit(cuisine: any, event: MatChipEditedEvent) {
     const value = event.value.trim();
 
-    // Remove fruit if it no longer has a name
     if (!value) {
       this.remove(cuisine);
       return;
     }
 
-    // Edit existing fruit
     this.cuisines.update(cuisines => {
       const index = cuisines.indexOf(cuisine);
       if (index >= 0) {
@@ -170,14 +181,78 @@ export class EditRestaurantDataComponent {
   }
 
   addDish(category: string) {
-    const name = prompt('Enter dish name');
-    const price = parseFloat(prompt('Enter price') || '0');
-    
-      // category.dishes.push({ id: Date.now(), name: dishName, price });
-      // this.categorySubject.next([...this.categories]);
+    const dialogRef = this.dialog.open(AddDishDialogComponent, {
+      width: '400px',
+      data: { category },
+    });
+  
+    dialogRef.afterClosed().subscribe((newDish) => {
+      if (newDish) {
+        
+        let dish:any =  {
+          "restaurant_id": this.restaurantId,
+          "dishName": newDish.dishName,
+          "category": newDish.category,
+          "price": newDish.price
+        }
+        const formData = new FormData();
+        const dishBlob = new Blob([JSON.stringify(dish)], { type: 'application/json' });
+        formData.append('dish', dishBlob);  // matches @RequestPart Dish dish
+        formData.append('pic', newDish.display);
+
+        this.restaurantService.addDishes(this.restaurantId, formData).subscribe({
+          next:(response) => {
+            if(response.body){
+              console.log(response.body);
+              console.log(+response.body.split(": ")[1])
+            }
+          },
+          error:(error) => {
+            console.log(error);
+            //TODO: add popup for handling
+          }
+        });
+        
+        const current = this.categoriesSubject.getValue();
+        const updated = {
+          ...current,
+          [category]: [...(current[category] || []), newDish],
+        };
+        this.categoriesSubject.next(updated);
+      }
+    });
   }
 
-  editDish(categoryId: string) {
+  editingDishId: number | null = null;
+  replaceImage: boolean = false;
+
+  editDish(dishId: number) {
+    this.editingDishId = dishId;
+    this.replaceImage = false
+  }
+  
+  cancelEdit() {
+    this.editingDishId = null;
+    this.replaceImage = false;
+  }
+
+  removePreview(dish: any) {
+    this.replaceImage = true;
+  }
+  
+  onFileSelectedd(event: any, dish: any) {
+    const file = event.target.files[0];
+    dish.display = URL.createObjectURL(file);
+    this.replaceImage = false;
+  }
+  
+  saveDish(dish: any) {
+    // TODO: Send update to server if needed
+    console.log('Saving', dish);
+    this.editingDishId = null;
+  }
+
+  // editDish(categoryId: string) {
     // const category = this.categories.find(c => c.id === categoryId);
     // if (category) {
     //   const dish = category.dishes.find(d => d.id === dishId);
@@ -187,7 +262,7 @@ export class EditRestaurantDataComponent {
     //     this.categorySubject.next([...this.categories]);
     //   }
     // }
-  }
+  // }
 
   deleteDish(categoryId: string) {
   //   const category = this.categories.find(c => c.id === categoryId);

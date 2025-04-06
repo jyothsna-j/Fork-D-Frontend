@@ -1,8 +1,15 @@
-mat-toolbar h1{
+mat-toolbar{
+    position: relative;
     font: Battiecito;
     text-align: center;
     font-weight:bolder;
     font-size: x-large;
+    background-color: rgba(0, 0, 0, 0.7) !important; /* Black with 70% opacity */
+    color: white; /* Ensures text is readable */
+    backdrop-filter: blur(10px); /* Optional: Adds a blurred background effect */
+    z-index: 1000;
+    height: 10%;
+    max-height: 70px;
 }
 .buttons{
     position: absolute;

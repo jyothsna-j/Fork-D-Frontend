@@ -46,7 +46,7 @@ export class SignupComponent {
           console.log('Signup failed. Try a different username.');
         }
       );
-      this.signupForm.addControl('confirmPassword', new FormControl('', Validators.required));
+      this.signupForm.addControl('confirmPassword', new FormControl(this.signupForm.value.password , Validators.required));
     }
   }
 }

@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Add Dish to {{ data.category }}</h2>
+<mat-dialog-content [formGroup]="dishForm">
+    
+    <input type = "file" (change)="onFileSelected($event)">
+
+    <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Dish Name</mat-label>
+        <input matInput formControlName="dishName" />
+     </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Price</mat-label>
+        <input matInput type="number" formControlName="price" />
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="submit()" [disabled]="dishForm.invalid">Add Dish</button>
+</mat-dialog-actions>
+

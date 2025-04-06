@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ApiResponse } from '../_utils/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,15 @@ export class RestaurantService {
     return this.http.get<any>(URL);
   }
 
-  getDishes(id: number) : Observable<any>{
+  //TODO -  Observable<ApiResponse<User[]>  this.http.get<ApiResponse<User[]>>(this.apiUrl); 
+  getDishes(id: number) : Observable<HttpResponse<ApiResponse<any>>>{
     let URL: string = this.baseURL + 'restaurant/' + id + '/dishes';
-    return this.http.get<any>(URL);
+    return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
+  }
+
+  addDishes(id: number, payload: any) : Observable<HttpResponse<String>>{
+    let URL: string = this.baseURL + 'restaurant/' + id + '/dishes';
+    return this.http.post<String>(URL, payload, {observe: 'response'});
   }
 
   postImage(formData: any){
