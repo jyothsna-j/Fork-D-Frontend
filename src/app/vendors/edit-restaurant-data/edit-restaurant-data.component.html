@@ -30,7 +30,7 @@
       <mat-panel-title>
         {{ category.key }}
       </mat-panel-title>
-      <mat-panel-description>
+      <mat-panel-description class="align-end">
         <button mat-icon-button (click)="editCategory(category.key)">
           <mat-icon>edit</mat-icon>
         </button>
@@ -40,14 +40,44 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <div *ngFor="let dish of category.value">
-      🍽 {{ dish.dishName }} - ${{ dish.price }}
-      <button mat-icon-button (click)="editDish(category.key)">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button (click)="deleteDish(category.key)">
-        <mat-icon>delete</mat-icon>
-      </button>
+    <div *ngFor="let dish of category.value" class = "dish-card">
+      
+      <!-- If editing, show inputs -->
+      <ng-container *ngIf="editingDishId === dish.dishId; else viewMode">
+
+        <div *ngIf="dish.display && !replaceImage">
+          <img [src]="dish.display" alt="Preview" width="50" height="50" class="dish-preview" />
+          <button mat-icon-button (click)="removePreview(dish)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div *ngIf="!dish.display || replaceImage">
+          <input type="file" (change)="onFileSelectedd($event, dish)" />
+        </div>
+
+        <input [(ngModel)]="dish.dishName" placeholder="Dish Name" />
+        <input type="number" [(ngModel)]="dish.price" placeholder="Price" />
+      
+        <button mat-icon-button (click)="saveDish(dish)">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-icon-button (click)="cancelEdit()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </ng-container>
+    
+      <!-- Otherwise, show display view -->
+      <ng-template #viewMode>
+        <img *ngIf="dish.display" [src]="dish.display" alt="Dish Image" width="50" height="50" class = "dish-preview"/>
+        <span class="dish-text">{{ dish.dishName }} - ${{ dish.price }}</span>
+        <button mat-icon-button (click)="editDish(dish.dishId)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button (click)="deleteDish(category.key)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </ng-template>
     </div>
 
     <button mat-button (click)="addDish(category.key)">+ Add Dish</button>

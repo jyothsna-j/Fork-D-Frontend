@@ -24,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatInputModule} from '@angular/material/input';
 import {MatStepperModule} from '@angular/material/stepper';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
@@ -36,6 +37,7 @@ import { SignupComponent } from './signup/signup.component';
 import { BillingComponent } from './billing/billing.component';
 import { OrdersComponent } from './orders/orders.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
+import { AddDishDialogComponent } from './_modals/add-dish-dialog/add-dish-dialog.component';
 
 
 @NgModule({
@@ -50,7 +52,8 @@ import { AuthInterceptor } from './Interceptor/auth.interceptor';
     LoginComponent,
     SignupComponent,
     BillingComponent,
-    OrdersComponent
+    OrdersComponent,
+    AddDishDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +77,7 @@ import { AuthInterceptor } from './Interceptor/auth.interceptor';
     MatSnackBarModule,
     MatInputModule,
     MatStepperModule,
+    MatDialogModule,
     ReactiveFormsModule
   ],
   providers: [

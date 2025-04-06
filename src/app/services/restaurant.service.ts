@@ -29,6 +29,11 @@ export class RestaurantService {
     return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
   }
 
+  addDishes(id: number, payload: any) : Observable<HttpResponse<String>>{
+    let URL: string = this.baseURL + 'restaurant/' + id + '/dishes';
+    return this.http.post<String>(URL, payload, {observe: 'response'});
+  }
+
   postImage(formData: any){
     let URL: string = this.baseURL + 'restaurants'
     this.http.put(URL, formData).subscribe({

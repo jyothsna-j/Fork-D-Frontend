@@ -6,3 +6,9 @@
 mat-form-field{
     width: 50%;
 }
+
+.dish-card {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
