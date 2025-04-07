@@ -41,13 +41,13 @@
     </mat-expansion-panel-header>
 
     <div *ngFor="let dish of category.value" class = "dish-card">
-      
+
       <!-- If editing, show inputs -->
       <ng-container *ngIf="editingDishId === dish.dishId; else viewMode">
 
         <div *ngIf="dish.display && !replaceImage">
           <img [src]="dish.display" alt="Preview" width="50" height="50" class="dish-preview" />
-          <button mat-icon-button (click)="removePreview(dish)">
+          <button mat-icon-button (click)="removePreview()">
             <mat-icon>close</mat-icon>
           </button>
         </div>
@@ -70,11 +70,11 @@
       <!-- Otherwise, show display view -->
       <ng-template #viewMode>
         <img *ngIf="dish.display" [src]="dish.display" alt="Dish Image" width="50" height="50" class = "dish-preview"/>
-        <span class="dish-text">{{ dish.dishName }} - ${{ dish.price }}</span>
+        <span class="dish-text">{{ dish.dishName }} - ₹{{ dish.price }}</span>
         <button mat-icon-button (click)="editDish(dish.dishId)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button (click)="deleteDish(category.key)">
+        <button mat-icon-button (click)="deleteDish(category.key, dish.dishId)">
           <mat-icon>delete</mat-icon>
         </button>
       </ng-template>
@@ -84,5 +84,9 @@
   </mat-expansion-panel>
 </mat-accordion>
 
-<button mat-fab color="primary" (click)="addCategory()">+ Add Category</button>
+<input #categoryInput matInput placeholder="New Category Name" />
+
+  <button mat-raised-button color="primary" (click)="addCategory(categoryInput.value); categoryInput.value=''">
+    Add
+  </button>
 </div>

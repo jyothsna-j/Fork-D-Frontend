@@ -20,8 +20,6 @@ export class EditRestaurantDataComponent {
   restaurantDetails: any = {};
   restaurantCuisines: string[] = [];
 
-  dishes: any;
-  categorizedDishes: { [key: string]: any[] }  = {};
   private categoriesSubject = new BehaviorSubject<{ [key: string]: any[] }>({});
   categories$: Observable<{ [key: string]: any[] }> = this.categoriesSubject.asObservable();
 
@@ -48,9 +46,10 @@ export class EditRestaurantDataComponent {
   }
 
   getDishes(id:number) {
+    let dishes: any, categorizedDishes: { [key: string]: any[] }  = {};
     this.restaurantService.getDishes(id).subscribe({
       next:(response) => {
-        this.dishes = response.body?.data.map((dish: any) => {
+        dishes = response.body?.data.map((dish: any) => {
           if (dish.dishImage && dish.dishImage.data && dish.dishImage.imageType) {
             dish.display = `data:${dish.dishImage.imageType};base64,${dish.dishImage.data}`;
           } else {
@@ -58,9 +57,8 @@ export class EditRestaurantDataComponent {
           }
           return dish;
         });
-        console.log(this.dishes);
-        this.categorizedDishes = _.groupBy(this.dishes, "category");
-        this.categoriesSubject.next(this.categorizedDishes);
+        categorizedDishes = _.groupBy(dishes, "category");
+        this.categoriesSubject.next(categorizedDishes);
       },
       error:(error) => {
         console.log(error);
@@ -156,10 +154,18 @@ export class EditRestaurantDataComponent {
   }
 
   //CATEGORIES
-  addCategory() {
-    // const newCategory: Category = { id: Date.now(), name, dishes: [] };
-    // this.categories.push(newCategory);
-    // this.categorySubject.next([...this.categories]);
+  addCategory(categoryKey: string) {
+    const currentCategories = this.categoriesSubject.getValue();
+
+    // If the key already exists, don't add again
+    if (currentCategories[categoryKey]) return;
+
+    const updatedCategories = {
+      ...currentCategories,
+      [categoryKey]: []
+    };
+
+    this.categoriesSubject.next(updatedCategories);
   }
 
   editCategory(name: string) {
@@ -200,7 +206,7 @@ export class EditRestaurantDataComponent {
         formData.append('dish', dishBlob);  // matches @RequestPart Dish dish
         formData.append('pic', newDish.display);
 
-        this.restaurantService.addDishes(this.restaurantId, formData).subscribe({
+        this.restaurantService.addDish(this.restaurantId, formData).subscribe({
           next:(response) => {
             if(response.body){
               console.log(response.body);
@@ -212,19 +218,20 @@ export class EditRestaurantDataComponent {
             //TODO: add popup for handling
           }
         });
-        
+
         const current = this.categoriesSubject.getValue();
-        const updated = {
-          ...current,
-          [category]: [...(current[category] || []), newDish],
-        };
-        this.categoriesSubject.next(updated);
+              const updated = {
+                ...current,
+                [category]: [...(current[category] || []), newDish],
+              };
+              this.categoriesSubject.next(updated);
       }
     });
   }
 
   editingDishId: number | null = null;
   replaceImage: boolean = false;
+  fileByteDish: File | null = null;
 
   editDish(dishId: number) {
     this.editingDishId = dishId;
@@ -234,41 +241,72 @@ export class EditRestaurantDataComponent {
   cancelEdit() {
     this.editingDishId = null;
     this.replaceImage = false;
+    this.fileByteDish  = null;
   }
 
-  removePreview(dish: any) {
+  removePreview() {
     this.replaceImage = true;
+    this.fileByteDish  = null;
   }
   
   onFileSelectedd(event: any, dish: any) {
-    const file = event.target.files[0];
-    dish.display = URL.createObjectURL(file);
+    this.fileByteDish = event.target.files[0];
+    dish.display = URL.createObjectURL(event.target.files[0]);
     this.replaceImage = false;
   }
   
   saveDish(dish: any) {
-    // TODO: Send update to server if needed
     console.log('Saving', dish);
     this.editingDishId = null;
+    const formData = new FormData();
+    const dishBlob = new Blob([JSON.stringify(dish)], { type: 'application/json' });
+    formData.append('dish', dishBlob);  // matches @RequestPart Dish dish
+    if (this.fileByteDish) {
+      formData.append('pic', this.fileByteDish);  // Matches @RequestParam("pic")
+    }
+    else{
+      formData.append('pic', new Blob());
+    }
+    this.restaurantService.updateDish(this.restaurantId, formData).subscribe({
+      next:(response) => {
+        if(response.body){
+          console.log(response.body);
+        }
+      },
+      error:(error) => {
+        console.log(error);
+        //TODO: add popup for handling
+      }
+    });
+    
+    this.fileByteDish  = null;
   }
 
-  // editDish(categoryId: string) {
-    // const category = this.categories.find(c => c.id === categoryId);
-    // if (category) {
-    //   const dish = category.dishes.find(d => d.id === dishId);
-    //   if (dish) {
-    //     dish.name = name;
-    //     dish.price = price;
-    //     this.categorySubject.next([...this.categories]);
-    //   }
-    // }
-  // }
+  deleteDish(category: string, dishId: number) {
 
-  deleteDish(categoryId: string) {
-  //   const category = this.categories.find(c => c.id === categoryId);
-  //   if (category) {
-  //     category.dishes = category.dishes.filter(d => d.id !== dishId);
-  //     this.categorySubject.next([...this.categories]);
-  //   }
+    this.restaurantService.deleteDish(this.restaurantId, dishId).subscribe({
+      next:(response) => {
+        if(response){
+          console.log(response.body);
+        }
+      },
+      error:(error) => {
+        console.log(error);
+        //TODO: add popup for handling
+      }
+    });
+
+
+    const currentCategories = this.categoriesSubject.getValue();
+    const updatedCategory = currentCategories[category]?.filter(dish => dish.dishId !== dishId);
+
+    const updatedCategories = {
+      ...currentCategories,
+      [category]: updatedCategory
+    };
+
+    console.log(category, dishId)
+    console.log(currentCategories, updatedCategory, updatedCategories);
+    this.categoriesSubject.next(updatedCategories);
   }
 }
