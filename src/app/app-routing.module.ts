@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'orders', component: OrdersComponent },
   { path: '', redirectTo: '/restaurants', pathMatch: 'full' },
 
-  { path: 'vendor/edit/:id', component: EditRestaurantDataComponent },
+  { path: 'vendor/edit', component: EditRestaurantDataComponent },
   { path: 'vendor/history', component: HistoryComponent },
   { path: 'vendor/live-orders', component: LiveOrdersComponent },
 ];

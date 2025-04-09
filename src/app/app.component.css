@@ -8,8 +8,15 @@ mat-toolbar{
     color: white; /* Ensures text is readable */
     backdrop-filter: blur(10px); /* Optional: Adds a blurred background effect */
     z-index: 1000;
-    height: 10%;
-    max-height: 70px;
+}
+.toolbar-1{
+    height: fit-content;
+    padding: 1%;;
+}
+.vendor-toolbar{
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
 }
 .buttons{
     position: absolute;

@@ -1,15 +1,24 @@
-<mat-toolbar>
-  <button mat-button (click)="goHome()"><mat-icon>home</mat-icon></button>
-  <h1>Fork'D</h1>
-  <div class = "buttons">
-      <div *ngIf="!isLoggedIn">
-        <button mat-raised-button color = "accent" (click)="openLogin()">Log In</button>
-        <button mat-raised-button color = "accent" (click)="openSignup()">Sign Up</button>
-      </div>
-    
-      <div *ngIf="isLoggedIn">
-        <button mat-raised-button color = "accent" (click) = "logout()">Log Out</button>
-      </div>
-  </div>
+<mat-toolbar class = "toolbar-1">
+    <button mat-button (click)="goHome()"><mat-icon>home</mat-icon></button>
+    <h1>Fork'D</h1>
+    <div class = "buttons">
+        <div *ngIf="!isLoggedIn">
+          <button mat-raised-button color = "accent" (click)="openLogin()">Log In</button>
+          <button mat-raised-button color = "accent" (click)="openSignup()">Sign Up</button>
+        </div>
+      
+        <div *ngIf="isLoggedIn">
+          <button mat-fab-button [matMenuTriggerFor]="menu"><mat-icon>person</mat-icon></button>
+          <mat-menu #menu="matMenu">
+            <p mat-menu-item>welcome {{user}}</p>
+            <button mat-button color = "accent" style ="width: 100%;" (click) = "logout()">Log Out</button>
+          </mat-menu>
+        </div>
+    </div>
+</mat-toolbar>
+<mat-toolbar class = "vendor-toolbar" *ngIf = "role==='VENDOR'">
+  <a mat-button routerLink="/vendor/edit">Home</a>
+  <a mat-button routerLink="/vendor/history">Home</a>
+  <a mat-button routerLink="/vendor/live-orders">Home</a>
 </mat-toolbar>
 <router-outlet></router-outlet>

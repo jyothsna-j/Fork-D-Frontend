@@ -26,9 +26,17 @@ export class LoginComponent {
         this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe(
           (token: string) => {
             this.authService.setToken(token);
-            this.router.navigate(['']).then(() => {
-              window.location.reload();
-            });
+            let role = this.authService.getRole();
+            if(role=='CUSTOMER'){
+              this.router.navigate(['']).then(() => {
+                window.location.reload();
+              });
+            }
+            if(role=='VENDOR'){
+              this.router.navigate(['vendor/edit']).then(() => {
+                window.location.reload();
+              });
+            }
           },
           error => {
             console.log('Login failed. Try Again');
