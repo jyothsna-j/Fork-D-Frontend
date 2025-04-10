@@ -4,6 +4,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import _ from "lodash";
 import { Router } from '@angular/router';
 import { OrderService } from '../services/order.service';
+import { DropLocations, DropPoint } from '../_models/address';
+import { UEngageServiceService } from '../services/u-engage-service.service';
 
 @Component({
   selector: 'app-billing',
@@ -11,15 +13,22 @@ import { OrderService } from '../services/order.service';
   styleUrls: ['./billing.component.css']
 })
 export class BillingComponent {
+
+  //user values
   userName: any;
+
+  //restaurant values
   restaurantId: any;
   isLoggedIn: boolean = false
   address: FormGroup;
   totalPrice: number = 0;
-  Razorpay: any;
   itemValues: any;
 
-  constructor( private userService: UserService, private fb: FormBuilder, private router: Router, private orderService: OrderService) {
+  //
+  dropLocations: DropPoint[] = DropLocations;
+  isDeliverable = null;
+
+  constructor( private userService: UserService, private fb: FormBuilder, private router: Router, private orderService: OrderService, private uEngageService: UEngageServiceService) {
     this.address = this.fb.group({
       address: ['', Validators.required],
     });
@@ -29,70 +38,77 @@ export class BillingComponent {
     this.restaurantId = history.state[0];
     this.itemValues = history.state[1];
     let prices = _.mapValues(this.itemValues, (cartItem) => cartItem.price*cartItem.quantity);
-    console.log(this.itemValues);
     this.totalPrice = _.reduce(_.values(prices),(sum, price) => sum + (Number(price) || 0), 0);
-    console.log(this.totalPrice);
+    this.isDeliverable = null;
 
     this.isLoggedIn = this.userService.isLoggedIn();
     this.userName = this.userService.getUsername();
   } 
 
-  makePayment(){
-    var options = {
-      key: "rzp_test_jYkGT70nFmsWUm",
-      key_secret: "",
-      amount: this.totalPrice *100,
-      currency: "INR",
-      name: "Jyoths",
-      description: "payment for testing",
-      handler: (response: any) => {
-        console.log(response);
-        if(response.razorpay_payment_id){
-            var order = {
-              user: {
-                userId: this.userService.getUserId()
-              },
-              restaurant: {
-                restaurantId: this.restaurantId
-              },
-              amount: this.totalPrice,
-              orderStatus: "PENDING",
-              orderDate: Date.now(),
-              items: itemsConverter(this.itemValues)
-            }
-          
-            console.log(order);
-          this.orderService.postOrder(order);
-          this.router.navigate(['/orders']);
+  checkDeliverability(address: any){
+    console.log(address.value);
+    const selectedPickup = this.dropLocations.find(loc => loc.key === address.value);
+    if(selectedPickup){
+      var payload = {
+        store_id: 0,
+        pickupDetails: {
+          latitude: 28.39232449,
+		      longitude: 77.34029003
+        },
+        dropDetails: {
+          latitude: selectedPickup.lat,
+          longitude: selectedPickup.lng
         }
-      },
-      prefill: {
-        name: "Jyothsna",
-        email: "mjr.jyothsna@gmail.com",
-        contact: "8248554906"
-      },
-      notes:{
-        address: "Razorpay Corporate Office"
-      },
-      theme: {
-        color: "#aaaaa"
       }
-    };
-    var pay = new (window as any).Razorpay(options);
-    pay.open();
+      this.uEngageService.getServiceability(payload).subscribe({
+        next:(response) => {
+          if(response.body){
+            console.log(response)
+          }
+        },
+        error:(error) => {
+          console.log(error);
+          //TODO: add popup for handling
+        }
+      })
+    }
+    
+    this.isDeliverable==false
   }
 
+  paymentMade(){
+
+  }
+
+        //     var order = {
+        //       user: {
+        //         userId: this.userService.getUserId()
+        //       },
+        //       restaurant: {
+        //         restaurantId: this.restaurantId
+        //       },
+        //       amount: this.totalPrice,
+        //       orderStatus: "PENDING",
+        //       orderDate: Date.now(),
+        //       items: itemsConverter(this.itemValues)
+        //     }
+          
+        //     console.log(order);
+        //   this.orderService.postOrder(order);
+        //   this.router.navigate(['/orders']);
+        // }
+
 }
 
-function itemsConverter(items: any) {
+// function itemsConverter(items: any) {
 
-  const orderedItems: any[] = Object.keys(items).map((key, index) => ({
-    orderedItemId: index + 1,
-    dish: { dishId: items[key].dishId },
-    price: items[key].price,
-    quantity: items[key].quantity
-  }));
+//   const orderedItems: any[] = Object.keys(items).map((key, index) => ({
+//     orderedItemId: index + 1,
+//     dish: { dishId: items[key].dishId },
+//     price: items[key].price,
+//     quantity: items[key].quantity
+//   }));
 
-  return orderedItems;
-}
+//   return orderedItems;
+// }
 

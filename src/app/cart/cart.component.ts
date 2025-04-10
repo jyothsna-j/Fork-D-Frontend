@@ -12,7 +12,7 @@ export class CartComponent {
   cartData: { [key: string]: any } = {};
   isCartEmpty: boolean = true;
   prices: { [key: string]: number } = {};
-  totalPrice: number = 0;
+  totalPrice: number = 0; platformCharge: number = 5; deliveryCharge: number = 0;
 
   constructor(private router: Router) {}
 
