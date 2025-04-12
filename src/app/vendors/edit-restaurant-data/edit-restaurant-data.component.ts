@@ -8,6 +8,7 @@ import {MatChipEditedEvent, MatChipInputEvent} from '@angular/material/chips';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDishDialogComponent } from 'src/app/_modals/add-dish-dialog/add-dish-dialog.component';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-edit-restaurant-data',
@@ -16,41 +17,49 @@ import { AddDishDialogComponent } from 'src/app/_modals/add-dish-dialog/add-dish
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditRestaurantDataComponent {
+  restaurantUserId: string | null = '';
   restaurantId: number = 0;
   restaurantDetails: any = {};
   restaurantCuisines: string[] = [];
 
-  dishes: any;
-  categorizedDishes: { [key: string]: any[] }  = {};
   private categoriesSubject = new BehaviorSubject<{ [key: string]: any[] }>({});
   categories$: Observable<{ [key: string]: any[] }> = this.categoriesSubject.asObservable();
 
-  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService, private dialog: MatDialog) {
+  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService, private dialog: MatDialog, private authService: UserService) {
   }
 
   ngOnInit() {
-    this.restaurantId = Number(this.route.snapshot.paramMap.get('id')); // Get ID from URL
-    console.log('Restaurant ID:', this.restaurantId);
-    this.getDishes(this.restaurantId);
-    this.getRestaurantDetails(this.restaurantId);
-    
+    this.restaurantUserId = this.authService.getUserId();
+    this.getRestaurantDetails(this.restaurantUserId);
   }
     
-  getRestaurantDetails(id:number) {
-    this.restaurantService.getRestaurantById(id)
-      .subscribe((response:any)=>{
-        this.restaurantDetails = response;
-        console.log(this.restaurantDetails)
-        this.restaurantCuisines  = this.restaurantDetails.cuisine.split(",") || []
-        this.cuisines.set([...this.restaurantCuisines]);
+  getRestaurantDetails(id:any) {
+    this.restaurantService.getRestaurantByUserId(id).subscribe({
+      next: (response) => {
+        if(response.status===204 || response.body===null){
+          //TODO: implement a snack bar
+        }
+        else{
+          this.restaurantDetails = response.body.data
+          this.restaurantId = this.restaurantDetails.restaurantId;
+          this.restaurantCuisines  = this.restaurantDetails.cuisine.split(",") || []
+          this.cuisines.set([...this.restaurantCuisines]);
+          this.getDishes(this.restaurantId);
+          console.log(this.restaurantDetails);
+        }
+      },
+      error: (error) => {
+        //TODO: implemet a snack bar
+      }
     });
-    console.log(this.cuisines)
   }
 
   getDishes(id:number) {
+    console.log(id);
+    let dishes: any, categorizedDishes: { [key: string]: any[] }  = {};
     this.restaurantService.getDishes(id).subscribe({
       next:(response) => {
-        this.dishes = response.body?.data.map((dish: any) => {
+        dishes = response.body?.data.map((dish: any) => {
           if (dish.dishImage && dish.dishImage.data && dish.dishImage.imageType) {
             dish.display = `data:${dish.dishImage.imageType};base64,${dish.dishImage.data}`;
           } else {
@@ -58,9 +67,9 @@ export class EditRestaurantDataComponent {
           }
           return dish;
         });
-        console.log(this.dishes);
-        this.categorizedDishes = _.groupBy(this.dishes, "category");
-        this.categoriesSubject.next(this.categorizedDishes);
+        categorizedDishes = _.groupBy(dishes, "category");
+        console.log(categorizedDishes);
+        this.categoriesSubject.next(categorizedDishes);
       },
       error:(error) => {
         console.log(error);
@@ -78,16 +87,14 @@ export class EditRestaurantDataComponent {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our value
     if (value) {
       this.cuisines.update(cuisines => [...cuisines,  value]);
     }
 
-    // Clear the input value
     event.chipInput!.clear();
   }
 
-  remove(cuisine: any): void {
+remove(cuisine: any): void {
     this.cuisines.update(cuisines => {
       const index = cuisines.indexOf(cuisine);
       if (index < 0) {
@@ -122,7 +129,25 @@ export class EditRestaurantDataComponent {
     return cuisine ? cuisine : null;
   }
 
+  uploadCuisine(){
+    const payload = {
+      restaurantId: this.restaurantId,
+      cuisine: this.cuisines().join(', ')
+    };
 
+    this.restaurantService.updateRestaurantCuisine(this.restaurantId, payload).subscribe({
+      next: (response) => {
+        if(response.body){
+          console.log(response.body);
+          //TODO: snack bar here
+        }
+      },
+      error: (error) => {
+        //TODO - snack bar
+        console.log(error);
+      }
+    });
+  }
   
   selectedFile!: File;
   imageURL!: any;
@@ -134,50 +159,45 @@ export class EditRestaurantDataComponent {
 
   uploadFile() {
     if (!this.selectedFile) {
+      //TODO: change alerts into snackbar
       alert('Please select a file first');
       return;
     }
 
     const formData = new FormData();
     formData.append('logo', this.selectedFile);
-    const restaurantData = JSON.stringify(this.restaurantDetails);
-    formData.append('restaurant', new Blob([restaurantData], { type: 'application/json' }));
-    console.log(formData.getAll);
 
-    this.restaurantService.postImage(formData)
-  }
-
-  viewFile() {
-    this.restaurantService.fetchImage(this.restaurantId).subscribe((blob:any)=> {
-      this.imageURL = URL.createObjectURL(blob);
-
+    this.restaurantService.updateRestaurantImage(this.restaurantId, formData).subscribe({
+      next: (response) => {
+        if(response.body){
+          console.log(response.body);
+          //TODO: snack bar here
+        }
+      },
+      error: (error) => {
+        //TODO - snack bar
+        console.log(error);
+      }
     });
-    console.log(this.imageURL);
   }
 
   //CATEGORIES
-  addCategory() {
-    // const newCategory: Category = { id: Date.now(), name, dishes: [] };
-    // this.categories.push(newCategory);
-    // this.categorySubject.next([...this.categories]);
-  }
+  addCategory(categoryKey: string) {
+    if(categoryKey==''){
+      alert('cant be empty');
+      return;
+    }
+    const currentCategories = this.categoriesSubject.getValue();
 
-  editCategory(name: string) {
-    // const category = this.categories.find(c => c.id === id);
-    // if (category) {
-    //   category.name = name;
-    //   this.categorySubject.next([...this.categories]);
-    // }
-  }
+    // If the key already exists, don't add again
+    if (currentCategories[categoryKey]) return;
 
-  deleteCategory(id: string) {
-    // const index = this.categories.findIndex(c => c.id === id);
-    // if (index !== -1 && this.categories[index].dishes.length === 0) {
-    //   this.categories.splice(index, 1);
-    //   this.categorySubject.next([...this.categories]);
-    // } else {
-    //   alert('Cannot delete category with dishes.');
-    // }
+    const updatedCategories = {
+      ...currentCategories,
+      [categoryKey]: []
+    };
+
+    this.categoriesSubject.next(updatedCategories);
   }
 
   addDish(category: string) {
@@ -188,7 +208,6 @@ export class EditRestaurantDataComponent {
   
     dialogRef.afterClosed().subscribe((newDish) => {
       if (newDish) {
-        
         let dish:any =  {
           "restaurant_id": this.restaurantId,
           "dishName": newDish.dishName,
@@ -200,11 +219,15 @@ export class EditRestaurantDataComponent {
         formData.append('dish', dishBlob);  // matches @RequestPart Dish dish
         formData.append('pic', newDish.display);
 
-        this.restaurantService.addDishes(this.restaurantId, formData).subscribe({
+        this.restaurantService.addDish(this.restaurantId, formData).subscribe({
           next:(response) => {
             if(response.body){
-              console.log(response.body);
-              console.log(+response.body.split(": ")[1])
+              const current = this.categoriesSubject.getValue();
+              const updated = {
+                ...current,
+                [category]: [...(current[category] || []), newDish],
+              };
+              this.categoriesSubject.next(updated);
             }
           },
           error:(error) => {
@@ -212,19 +235,13 @@ export class EditRestaurantDataComponent {
             //TODO: add popup for handling
           }
         });
-        
-        const current = this.categoriesSubject.getValue();
-        const updated = {
-          ...current,
-          [category]: [...(current[category] || []), newDish],
-        };
-        this.categoriesSubject.next(updated);
       }
     });
   }
 
   editingDishId: number | null = null;
   replaceImage: boolean = false;
+  fileByteDish: File | null = null;
 
   editDish(dishId: number) {
     this.editingDishId = dishId;
@@ -234,41 +251,66 @@ export class EditRestaurantDataComponent {
   cancelEdit() {
     this.editingDishId = null;
     this.replaceImage = false;
+    this.fileByteDish  = null;
   }
 
-  removePreview(dish: any) {
+  removePreview() {
     this.replaceImage = true;
+    this.fileByteDish  = null;
   }
   
   onFileSelectedd(event: any, dish: any) {
-    const file = event.target.files[0];
-    dish.display = URL.createObjectURL(file);
+    this.fileByteDish = event.target.files[0];
+    dish.display = URL.createObjectURL(event.target.files[0]);
     this.replaceImage = false;
   }
   
   saveDish(dish: any) {
-    // TODO: Send update to server if needed
     console.log('Saving', dish);
     this.editingDishId = null;
+    const formData = new FormData();
+    const dishBlob = new Blob([JSON.stringify(dish)], { type: 'application/json' });
+    formData.append('dish', dishBlob);  // matches @RequestPart Dish dish
+    if (this.fileByteDish) {
+      formData.append('pic', this.fileByteDish);  // Matches @RequestParam("pic")
+    }
+    else{
+      formData.append('pic', new Blob());
+    }
+    this.restaurantService.updateDish(this.restaurantId, formData).subscribe({
+      next:(response) => {
+        if(response.body){
+          this.fileByteDish  = null;
+        }
+      },
+      error:(error) => {
+        console.log(error);
+        //TODO: add popup for handling
+      }
+    });
+    
   }
 
-  // editDish(categoryId: string) {
-    // const category = this.categories.find(c => c.id === categoryId);
-    // if (category) {
-    //   const dish = category.dishes.find(d => d.id === dishId);
-    //   if (dish) {
-    //     dish.name = name;
-    //     dish.price = price;
-    //     this.categorySubject.next([...this.categories]);
-    //   }
-    // }
-  // }
+  deleteDish(category: string, dishId: number) {
 
-  deleteDish(categoryId: string) {
-  //   const category = this.categories.find(c => c.id === categoryId);
-  //   if (category) {
-  //     category.dishes = category.dishes.filter(d => d.id !== dishId);
-  //     this.categorySubject.next([...this.categories]);
-  //   }
+    this.restaurantService.deleteDish(this.restaurantId, dishId).subscribe({
+      next:(response) => {
+        if(response){
+          const currentCategories = this.categoriesSubject.getValue();
+          const updatedCategory = currentCategories[category]?.filter(dish => dish.dishId !== dishId);
+
+          const updatedCategories = {
+            ...currentCategories,
+            [category]: updatedCategory
+          };
+          
+          this.categoriesSubject.next(updatedCategories);
+        }
+      },
+      error:(error) => {
+        console.log(error);
+        //TODO: add popup for handling
+      }
+    });
   }
 }

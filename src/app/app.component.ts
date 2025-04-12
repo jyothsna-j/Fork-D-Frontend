@@ -11,11 +11,15 @@ export class AppComponent {
   title = 'forkd';
 
   isLoggedIn: boolean = false;
+  user: string | null = '';
+  role: string| null = '';
 
   constructor(private authService: UserService, private router: Router) {}
 
   ngOnInit(): void {
     this.isLoggedIn = this.authService.isLoggedIn();
+    this.user = this.authService.getUsername();
+    this.role = this.authService.getRole();
   } 
 
   goHome(){

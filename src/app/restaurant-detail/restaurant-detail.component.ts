@@ -29,10 +29,16 @@ export class RestaurantDetailComponent {
   }
 
   getRestaurantDetails(id:number) {
-    this.restaurantService.getRestaurantById(id)
-      .subscribe((response:any)=>{
-        this.restaurantDetails = response;
-        console.log(this.restaurantDetails)
+    this.restaurantService.getRestaurantById(id).subscribe({
+      next: (response) =>{
+        if(response.status === 204 || response.body === null){
+          //TODO - SNACK BAR
+          return;
+        }
+        else{
+         this.restaurantDetails = response.body.data;
+        }
+      }
     });
   }
 
@@ -40,7 +46,7 @@ export class RestaurantDetailComponent {
     this.restaurantService.getDishes(id).subscribe({
       next:(response) => {
         if(response.status===204){
-          alert('no dishes found');
+          //TODO: make a snackbar
         }
         else{
           this.dishes = response.body?.data;

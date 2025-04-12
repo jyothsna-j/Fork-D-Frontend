@@ -1,7 +1,8 @@
-import { Component} from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-signup',
@@ -9,6 +10,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent {
+  
+  private _snackBar = inject(MatSnackBar);
+
   signupForm: FormGroup;
   hidePassword = true;
   hideConfirmPassword = true;
@@ -35,17 +39,27 @@ export class SignupComponent {
     if (this.signupForm.valid) {
       console.log('Form Submitted', this.signupForm.value.name);
       this.signupForm.removeControl('confirmPassword');
-      this.authService.signup(this.signupForm.value).subscribe(
-        (token: string) => {
-          this.authService.setToken(token);
-          this.router.navigate(['']).then(() => {
-            window.location.reload();
-          });
+      this.authService.signup(this.signupForm.value).subscribe({
+        next:(response) => {
+          if(response.body){
+          }
         },
-        error => {
-          console.log('Signup failed. Try a different username.');
+        error: (error) => {
+          console.log(error);
+          this._snackBar.open(error.error.message, 'Dismiss', {
+            duration: 3000
+          })
         }
-      );
+      });
+      //   (token: string) => {
+      //     this.authService.setToken(token);
+      //     this.router.navigate(['']).then(() => {
+      //       window.location.reload();
+      //     });
+      //   },
+      //   error => {
+      //     console.log('Signup failed. Try a different username.');
+      //   }
       this.signupForm.addControl('confirmPassword', new FormControl(this.signupForm.value.password , Validators.required));
     }
   }

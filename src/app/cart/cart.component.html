@@ -11,40 +11,30 @@
     <h1>Placing your order</h1>
     <div class="card-wrapper">
         <mat-card class="card" *ngFor="let dish of cartData | keyvalue">
-            <mat-grid-list cols="3" rowHeight="11:1">
-                <mat-grid-tile>
-                    <mat-card-title>
-                        {{dish.key}}<br>
-                        ₹{{dish.value.price}}
-                    </mat-card-title>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <div class="cart-buttons">
-                        <button mat-icon-button (click) = "decrementCartItem(dish.key)">
-                            <mat-icon>remove_shopping_cart</mat-icon>
-                        </button>
-                        <input matInput type="number" [(ngModel)]="cartData[dish.key].quantity" onchange="handleChange(event)">
-                        <button mat-icon-button (click) = "incrementCartItem(dish.key)">
-                            <mat-icon>add_shopping_cart</mat-icon>
-                        </button>
-                    </div>
-                </mat-grid-tile>
-                <mat-grid-tile>
+            <div class="dish-row">
+                <div style="flex:2;">
+                    {{dish.key}}<br>
+                    ₹{{dish.value.price}}
+                </div>
+                <div class="cart-buttons">
+                    <button mat-icon-button (click) = "decrementCartItem(dish.key)">
+                        <mat-icon>remove_shopping_cart</mat-icon>
+                    </button>
+                    <input matInput type="number" [(ngModel)]="cartData[dish.key].quantity" onchange="handleChange(event)">
+                    <button mat-icon-button (click) = "incrementCartItem(dish.key)">
+                        <mat-icon>add_shopping_cart</mat-icon>
+                    </button>
+                </div>
+                <div style="flex:1; display: flex; align-items: center; justify-content: flex-end;">
                     {{prices[dish.key]}}
-                </mat-grid-tile>
-            </mat-grid-list>
+                </div>
+            </div>
         </mat-card>
         <mat-card class="card">
-            <mat-grid-list cols="2" rowHeight="11:1">
-                <mat-grid-tile>
-                    <mat-card-title>
-                        <strong>TOTAL PRICE</strong>
-                    </mat-card-title>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    {{this.totalPrice}}
-                </mat-grid-tile>
-            </mat-grid-list>
+            <div class="dish-row">
+                <div><strong>TOTAL PRICE</strong></div>
+                <div>₹{{ totalPrice }}</div>
+            </div>
         </mat-card>
     </div>
     <button mat-raised-button color="primary" (click)="goToBilling()">Buy Items Now</button>

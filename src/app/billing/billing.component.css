@@ -1,0 +1,17 @@
+.page-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+  
+  .billing {
+    flex: 2;
+  }
+  
+  .cart-card {
+    flex: 1;
+    background-color: #f8f8f8;
+    padding: 1rem;
+    border-radius: 8px;
+  }

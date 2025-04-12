@@ -13,14 +13,34 @@ export class RestaurantService {
 
   constructor(private http: HttpClient) { }
 
-  getRestaurants() : Observable<any>{
+  getRestaurants() : Observable<HttpResponse<ApiResponse<any>>>{
     let URL:string = this.baseURL + 'restaurants';
-    return this.http.get<any>(URL);
+    return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
   }
 
-  getRestaurantById(id: number) : Observable<any>{
+  fetchRestaurantImage(id: number) {
+    let URL: string = this.baseURL + 'restaurants/image/' + id
+    return this.http.get(URL, { responseType: 'blob' });
+  }
+
+  getRestaurantById(id: number) : Observable<HttpResponse<ApiResponse<any>>>{
     let URL: string = this.baseURL + 'restaurants/' + id;
-    return this.http.get<any>(URL);
+    return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
+  }
+
+  getRestaurantByUserId(id: number) : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL: string = this.baseURL + 'restaurants/user/' + id;
+    return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
+  }
+
+  updateRestaurantImage(id: number, formData: any) : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL: string = this.baseURL + 'restaurants/images/' + id;
+    return this.http.put<ApiResponse<any>>(URL, formData, {observe: 'response'});
+  }
+
+  updateRestaurantCuisine(id: number, payload: any) : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL: string = this.baseURL + 'restaurants/cuisine/' + id;
+    return this.http.put<ApiResponse<any>>(URL, payload, {observe: 'response'});
   }
 
   //TODO -  Observable<ApiResponse<User[]>  this.http.get<ApiResponse<User[]>>(this.apiUrl); 
@@ -29,21 +49,19 @@ export class RestaurantService {
     return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
   }
 
-  addDishes(id: number, payload: any) : Observable<HttpResponse<String>>{
+  addDish(id: number, payload: any) : Observable<HttpResponse<ApiResponse<any>>>{
     let URL: string = this.baseURL + 'restaurant/' + id + '/dishes';
-    return this.http.post<String>(URL, payload, {observe: 'response'});
+    return this.http.post<ApiResponse<any>>(URL, payload, {observe: 'response'});
   }
 
-  postImage(formData: any){
-    let URL: string = this.baseURL + 'restaurants'
-    this.http.put(URL, formData).subscribe({
-      next: (res) => console.log('Upload Successful', res),
-      error: (err) => console.error('Upload Failed', err),
-    })
+  updateDish(id: number, payload: any) : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL: string = this.baseURL + 'restaurant/' + id + '/dishes';
+    return this.http.put<ApiResponse<any>>(URL, payload, {observe: 'response'});
   }
 
-  fetchImage(id: number) {
-    let URL: string = this.baseURL + 'restaurants/image/' + id
-    return this.http.get(URL, { responseType: 'blob' });
+  deleteDish(restaurantId: number, dishId: number) : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL: string = this.baseURL + 'restaurant/' + restaurantId + '/dishes/' + dishId;
+    return this.http.delete<ApiResponse<any>>(URL, {observe: 'response'});
   }
+
 }
