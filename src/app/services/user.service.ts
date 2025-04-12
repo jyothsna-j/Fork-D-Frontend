@@ -1,6 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ApiResponse } from '../_utils/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +13,17 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  signup(user: any){
+  signup(user: any) : Observable<HttpResponse<ApiResponse<any>>>{
     console.log(user)
     let URL: string = this.baseURL + '/signup'
     localStorage.setItem('user', user.username);
-    return this.http.post(URL, user, { responseType: 'text' })
+    return this.http.post<ApiResponse<String>>(URL, user, {observe: 'response'});
   }
 
-  login(username: string, password: string){
+  login(username: string, password: string): Observable<HttpResponse<ApiResponse<any>>>{
     let URL: string = this.baseURL + '/login'
     localStorage.setItem('user', username);
-    return this.http.post(URL, { username, password }, { responseType: 'text' })
+    return this.http.post<ApiResponse<String>>(URL, { username, password }, {observe: 'response'})
   }
 
   setToken(token: string) {
