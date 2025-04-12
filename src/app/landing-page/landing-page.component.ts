@@ -20,30 +20,31 @@ export class LandingPageComponent {
   }
 
   getRestaurants(){
-    this.restaurantService.getRestaurants()
-      .subscribe((response:any)=>{
-        response.forEach((restaurant: any) => {
-          let imageBlob = new Blob([restaurant.logo.data]);
-
-          console.log(restaurant);
-          let formattedRestaurant = {
-            restaurantId: restaurant.restaurantId,
-            restaurantName: restaurant.restaurantName,
-            cuisine: restaurant.cuisine,
-            logo: restaurant.logo.data
-
-          };
-          console.log(formattedRestaurant)
-          if (restaurant.logo.data!= null){
-            this.restaurantService.fetchImage(restaurant.restaurantId).subscribe((blob:any)=> {
-              console.log("ere" + blob)
-              formattedRestaurant.logo = URL.createObjectURL(blob);
-        
-            });
-          }
-          console.log(formattedRestaurant)
-          this.restaurants.push(formattedRestaurant);
-        });
+    this.restaurantService.getRestaurants().subscribe({
+      next: (response) => {
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          response.body.data.forEach((restaurant: any) => {
+            let formattedRestaurant = {
+              restaurantId: restaurant.restaurantId,
+              restaurantName: restaurant.restaurantName,
+              cuisine: restaurant.cuisine,
+              logo: ''
+            };
+            if (restaurant.logo.data!= null){
+              this.restaurantService.fetchRestaurantImage(restaurant.restaurantId).subscribe((blob:any)=> {
+                formattedRestaurant.logo = URL.createObjectURL(blob);
+              });
+            }
+            this.restaurants.push(formattedRestaurant);
+          });
+        }
+      },
+      error: (error: any) => {
+        //TODO
+      }
     });
   }
 

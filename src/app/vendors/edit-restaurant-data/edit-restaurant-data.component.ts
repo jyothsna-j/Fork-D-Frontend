@@ -8,6 +8,7 @@ import {MatChipEditedEvent, MatChipInputEvent} from '@angular/material/chips';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDishDialogComponent } from 'src/app/_modals/add-dish-dialog/add-dish-dialog.component';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-edit-restaurant-data',
@@ -16,6 +17,7 @@ import { AddDishDialogComponent } from 'src/app/_modals/add-dish-dialog/add-dish
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditRestaurantDataComponent {
+  restaurantUserId: string | null = '';
   restaurantId: number = 0;
   restaurantDetails: any = {};
   restaurantCuisines: string[] = [];
@@ -23,29 +25,37 @@ export class EditRestaurantDataComponent {
   private categoriesSubject = new BehaviorSubject<{ [key: string]: any[] }>({});
   categories$: Observable<{ [key: string]: any[] }> = this.categoriesSubject.asObservable();
 
-  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService, private dialog: MatDialog) {
+  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService, private dialog: MatDialog, private authService: UserService) {
   }
 
   ngOnInit() {
-    this.restaurantId = Number(this.route.snapshot.paramMap.get('id')); // Get ID from URL
-    console.log('Restaurant ID:', this.restaurantId);
-    this.getDishes(this.restaurantId);
-    this.getRestaurantDetails(this.restaurantId);
-    
+    this.restaurantUserId = this.authService.getUserId();
+    this.getRestaurantDetails(this.restaurantUserId);
   }
     
-  getRestaurantDetails(id:number) {
-    this.restaurantService.getRestaurantById(id)
-      .subscribe((response:any)=>{
-        this.restaurantDetails = response;
-        console.log(this.restaurantDetails)
-        this.restaurantCuisines  = this.restaurantDetails.cuisine.split(",") || []
-        this.cuisines.set([...this.restaurantCuisines]);
+  getRestaurantDetails(id:any) {
+    this.restaurantService.getRestaurantByUserId(id).subscribe({
+      next: (response) => {
+        if(response.status===204 || response.body===null){
+          //TODO: implement a snack bar
+        }
+        else{
+          this.restaurantDetails = response.body.data
+          this.restaurantId = this.restaurantDetails.restaurantId;
+          this.restaurantCuisines  = this.restaurantDetails.cuisine.split(",") || []
+          this.cuisines.set([...this.restaurantCuisines]);
+          this.getDishes(this.restaurantId);
+          console.log(this.restaurantDetails);
+        }
+      },
+      error: (error) => {
+        //TODO: implemet a snack bar
+      }
     });
-    console.log(this.cuisines)
   }
 
   getDishes(id:number) {
+    console.log(id);
     let dishes: any, categorizedDishes: { [key: string]: any[] }  = {};
     this.restaurantService.getDishes(id).subscribe({
       next:(response) => {
@@ -58,6 +68,7 @@ export class EditRestaurantDataComponent {
           return dish;
         });
         categorizedDishes = _.groupBy(dishes, "category");
+        console.log(categorizedDishes);
         this.categoriesSubject.next(categorizedDishes);
       },
       error:(error) => {
@@ -76,16 +87,14 @@ export class EditRestaurantDataComponent {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our value
     if (value) {
       this.cuisines.update(cuisines => [...cuisines,  value]);
     }
 
-    // Clear the input value
     event.chipInput!.clear();
   }
 
-  remove(cuisine: any): void {
+remove(cuisine: any): void {
     this.cuisines.update(cuisines => {
       const index = cuisines.indexOf(cuisine);
       if (index < 0) {
@@ -120,7 +129,25 @@ export class EditRestaurantDataComponent {
     return cuisine ? cuisine : null;
   }
 
+  uploadCuisine(){
+    const payload = {
+      restaurantId: this.restaurantId,
+      cuisine: this.cuisines().join(', ')
+    };
 
+    this.restaurantService.updateRestaurantCuisine(this.restaurantId, payload).subscribe({
+      next: (response) => {
+        if(response.body){
+          console.log(response.body);
+          //TODO: snack bar here
+        }
+      },
+      error: (error) => {
+        //TODO - snack bar
+        console.log(error);
+      }
+    });
+  }
   
   selectedFile!: File;
   imageURL!: any;
@@ -132,29 +159,34 @@ export class EditRestaurantDataComponent {
 
   uploadFile() {
     if (!this.selectedFile) {
+      //TODO: change alerts into snackbar
       alert('Please select a file first');
       return;
     }
 
     const formData = new FormData();
     formData.append('logo', this.selectedFile);
-    const restaurantData = JSON.stringify(this.restaurantDetails);
-    formData.append('restaurant', new Blob([restaurantData], { type: 'application/json' }));
-    console.log(formData.getAll);
 
-    this.restaurantService.postImage(formData)
-  }
-
-  viewFile() {
-    this.restaurantService.fetchImage(this.restaurantId).subscribe((blob:any)=> {
-      this.imageURL = URL.createObjectURL(blob);
-
+    this.restaurantService.updateRestaurantImage(this.restaurantId, formData).subscribe({
+      next: (response) => {
+        if(response.body){
+          console.log(response.body);
+          //TODO: snack bar here
+        }
+      },
+      error: (error) => {
+        //TODO - snack bar
+        console.log(error);
+      }
     });
-    console.log(this.imageURL);
   }
 
   //CATEGORIES
   addCategory(categoryKey: string) {
+    if(categoryKey==''){
+      alert('cant be empty');
+      return;
+    }
     const currentCategories = this.categoriesSubject.getValue();
 
     // If the key already exists, don't add again
@@ -168,24 +200,6 @@ export class EditRestaurantDataComponent {
     this.categoriesSubject.next(updatedCategories);
   }
 
-  editCategory(name: string) {
-    // const category = this.categories.find(c => c.id === id);
-    // if (category) {
-    //   category.name = name;
-    //   this.categorySubject.next([...this.categories]);
-    // }
-  }
-
-  deleteCategory(id: string) {
-    // const index = this.categories.findIndex(c => c.id === id);
-    // if (index !== -1 && this.categories[index].dishes.length === 0) {
-    //   this.categories.splice(index, 1);
-    //   this.categorySubject.next([...this.categories]);
-    // } else {
-    //   alert('Cannot delete category with dishes.');
-    // }
-  }
-
   addDish(category: string) {
     const dialogRef = this.dialog.open(AddDishDialogComponent, {
       width: '400px',
@@ -194,7 +208,6 @@ export class EditRestaurantDataComponent {
   
     dialogRef.afterClosed().subscribe((newDish) => {
       if (newDish) {
-        
         let dish:any =  {
           "restaurant_id": this.restaurantId,
           "dishName": newDish.dishName,
@@ -209,8 +222,12 @@ export class EditRestaurantDataComponent {
         this.restaurantService.addDish(this.restaurantId, formData).subscribe({
           next:(response) => {
             if(response.body){
-              console.log(response.body);
-              console.log(+response.body.split(": ")[1])
+              const current = this.categoriesSubject.getValue();
+              const updated = {
+                ...current,
+                [category]: [...(current[category] || []), newDish],
+              };
+              this.categoriesSubject.next(updated);
             }
           },
           error:(error) => {
@@ -218,13 +235,6 @@ export class EditRestaurantDataComponent {
             //TODO: add popup for handling
           }
         });
-
-        const current = this.categoriesSubject.getValue();
-              const updated = {
-                ...current,
-                [category]: [...(current[category] || []), newDish],
-              };
-              this.categoriesSubject.next(updated);
       }
     });
   }
@@ -270,7 +280,7 @@ export class EditRestaurantDataComponent {
     this.restaurantService.updateDish(this.restaurantId, formData).subscribe({
       next:(response) => {
         if(response.body){
-          console.log(response.body);
+          this.fileByteDish  = null;
         }
       },
       error:(error) => {
@@ -279,7 +289,6 @@ export class EditRestaurantDataComponent {
       }
     });
     
-    this.fileByteDish  = null;
   }
 
   deleteDish(category: string, dishId: number) {
@@ -287,7 +296,15 @@ export class EditRestaurantDataComponent {
     this.restaurantService.deleteDish(this.restaurantId, dishId).subscribe({
       next:(response) => {
         if(response){
-          console.log(response.body);
+          const currentCategories = this.categoriesSubject.getValue();
+          const updatedCategory = currentCategories[category]?.filter(dish => dish.dishId !== dishId);
+
+          const updatedCategories = {
+            ...currentCategories,
+            [category]: updatedCategory
+          };
+          
+          this.categoriesSubject.next(updatedCategories);
         }
       },
       error:(error) => {
@@ -295,18 +312,5 @@ export class EditRestaurantDataComponent {
         //TODO: add popup for handling
       }
     });
-
-
-    const currentCategories = this.categoriesSubject.getValue();
-    const updatedCategory = currentCategories[category]?.filter(dish => dish.dishId !== dishId);
-
-    const updatedCategories = {
-      ...currentCategories,
-      [category]: updatedCategory
-    };
-
-    console.log(category, dishId)
-    console.log(currentCategories, updatedCategory, updatedCategories);
-    this.categoriesSubject.next(updatedCategories);
   }
 }

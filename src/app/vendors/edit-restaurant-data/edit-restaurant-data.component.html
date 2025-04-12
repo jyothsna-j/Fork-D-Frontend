@@ -21,7 +21,7 @@
       <input placeholder="Add Cuisine" [matChipInputFor]="chipGrid" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)" />
     </mat-chip-grid>
 </mat-form-field>
-<button mat-raised-button color="primary">Upload Cuisine</button>
+<button mat-raised-button (click)="uploadCuisine()" color="primary">Upload Cuisine</button>
 
 <h4>Update Food Categories</h4>
 <mat-accordion multi="true">
@@ -30,14 +30,6 @@
       <mat-panel-title>
         {{ category.key }}
       </mat-panel-title>
-      <mat-panel-description class="align-end">
-        <button mat-icon-button (click)="editCategory(category.key)">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button (click)="deleteCategory(category.key)">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-panel-description>
     </mat-expansion-panel-header>
 
     <div *ngFor="let dish of category.value" class = "dish-card">

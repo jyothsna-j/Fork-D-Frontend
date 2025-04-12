@@ -25,3 +25,27 @@ mat-toolbar{
 .buttons button{
     margin: 3%;
 }
+.fancy-link {
+    position: relative;
+    text-decoration: none;         /* remove default underline */
+    font-size: 0.9rem;             /* smaller font */
+    font-weight: normal;           /* "normaller" :) */
+    color: #333;                   /* adjust color as needed */
+    padding-bottom: 2px;           /* space for underline */
+}
+  
+.fancy-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: rgb(58, 214, 71); /* uses text color */
+  transition: width 0.3s ease-in-out;
+}
+
+.fancy-link:hover::after {
+  width: 100%;
+}
+  
