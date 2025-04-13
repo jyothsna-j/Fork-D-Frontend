@@ -26,6 +26,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
@@ -80,6 +81,7 @@ import { AddDishDialogComponent } from './_modals/add-dish-dialog/add-dish-dialo
     MatStepperModule,
     MatDialogModule,
     MatMenuModule,
+    MatTooltipModule,
     ReactiveFormsModule
   ],
   providers: [

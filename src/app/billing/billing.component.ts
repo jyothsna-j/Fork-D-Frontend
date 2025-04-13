@@ -26,7 +26,8 @@ export class BillingComponent {
 
   //
   dropLocations: DropPoint[] = DropLocations;
-  isDeliverable = null;
+  deliveryCharge: any = 0;
+  isDeliverable : boolean | null = null;
 
   constructor( private userService: UserService, private fb: FormBuilder, private router: Router, private orderService: OrderService, private uEngageService: UEngageServiceService) {
     this.address = this.fb.group({
@@ -37,33 +38,36 @@ export class BillingComponent {
   ngOnInit() {
     this.restaurantId = history.state[0];
     this.itemValues = history.state[1];
-    let prices = _.mapValues(this.itemValues, (cartItem) => cartItem.price*cartItem.quantity);
-    this.totalPrice = _.reduce(_.values(prices),(sum, price) => sum + (Number(price) || 0), 0);
-    this.isDeliverable = null;
 
     this.isLoggedIn = this.userService.isLoggedIn();
     this.userName = this.userService.getUsername();
   } 
 
+  setTotalPrice(data: number) {
+    this.totalPrice = data;
+  }
+
   checkDeliverability(address: any){
-    console.log(address.value);
     const selectedPickup = this.dropLocations.find(loc => loc.key === address.value);
     if(selectedPickup){
       var payload = {
-        store_id: 0,
-        pickupDetails: {
-          latitude: 28.39232449,
-		      longitude: 77.34029003
+        "store_id": "89",
+        "pickupDetails": {
+          "latitude": "28.39232449",
+		      "longitude": "77.34029003"
         },
-        dropDetails: {
+        "dropDetails": {
           latitude: selectedPickup.lat,
           longitude: selectedPickup.lng
         }
       }
+      console.log(payload);
       this.uEngageService.getServiceability(payload).subscribe({
         next:(response) => {
           if(response.body){
-            console.log(response)
+            //TODO - handle failure
+            this.deliveryCharge = response.body.payouts.total;
+            this.isDeliverable=true
           }
         },
         error:(error) => {
@@ -73,42 +77,41 @@ export class BillingComponent {
       })
     }
     
-    this.isDeliverable==false
+    
   }
 
   paymentMade(){
-
+    var order = {
+      user: {
+        userId: this.userService.getUserId()
+      },
+      restaurant: {
+        restaurantId: this.restaurantId
+      },
+      amount: this.totalPrice,
+      orderStatus: "PENDING",
+      orderDate: Date.now(),
+      items: itemsConverter(this.itemValues)
+    }
+  
+    console.log(order);
+    this.orderService.postOrder(order);
+    this.router.navigate(['/orders']);
   }
 
-        //     var order = {
-        //       user: {
-        //         userId: this.userService.getUserId()
-        //       },
-        //       restaurant: {
-        //         restaurantId: this.restaurantId
-        //       },
-        //       amount: this.totalPrice,
-        //       orderStatus: "PENDING",
-        //       orderDate: Date.now(),
-        //       items: itemsConverter(this.itemValues)
-        //     }
-          
-        //     console.log(order);
-        //   this.orderService.postOrder(order);
-        //   this.router.navigate(['/orders']);
-        // }
+            
 
 }
 
-// function itemsConverter(items: any) {
+function itemsConverter(items: any) {
 
-//   const orderedItems: any[] = Object.keys(items).map((key, index) => ({
-//     orderedItemId: index + 1,
-//     dish: { dishId: items[key].dishId },
-//     price: items[key].price,
-//     quantity: items[key].quantity
-//   }));
+  const orderedItems: any[] = Object.keys(items).map((key, index) => ({
+    orderedItemId: index + 1,
+    dish: { dishId: items[key].dishId },
+    price: items[key].price,
+    quantity: items[key].quantity
+  }));
 
-//   return orderedItems;
-// }
+  return orderedItems;
+}
 
