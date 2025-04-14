@@ -37,7 +37,7 @@ export class BillingComponent {
 
   ngOnInit() {
     this.restaurantId = history.state[0];
-    this.itemValues = history.state[1];
+    this.itemValues = _.pickBy(history.state[1], item => item.quantity > 0);
 
     this.isLoggedIn = this.userService.isLoggedIn();
     this.userName = this.userService.getUsername();
@@ -89,7 +89,7 @@ export class BillingComponent {
         restaurantId: this.restaurantId
       },
       amount: this.totalPrice,
-      orderStatus: "PENDING",
+      orderStatus: "PAYMENT_APPROVAL_PENDING",
       orderDate: Date.now(),
       items: itemsConverter(this.itemValues)
     }
