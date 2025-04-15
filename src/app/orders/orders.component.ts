@@ -10,9 +10,14 @@ import _ from 'lodash';
 })
 export class OrdersComponent {
 
+  orders: any[] = [];
+  selectedStatus: string = '';
+  selectedOrder: any | null = null;
+  isPanelOpen = false;
+
   liveOrders: any[] = [];
   pastOrders: any[] = []
-  displayedColumns = ['orderId', 'restaurantName']
+  displayedColumns = ['orderId', 'restaurantName', 'amount', 'status', 'trackOrder']
 
   constructor(private userService: UserService, private orderService: OrderService) {}
 
@@ -37,5 +42,25 @@ export class OrdersComponent {
       console.log('Past Orders:', this.pastOrders);
     });
 
+  }
+
+  getStatusColor(status: string): string {
+    return {
+      'PENDING': 'warn',
+      'PREPARING': 'primary',
+      'PREPARED': 'accent',
+      'IN TRANSIT': 'accent',
+      'DELIVERED': 'primary',
+    }[status] || 'default';
+  }
+
+  openPanel(order: any): void {
+    this.selectedOrder = order;
+    this.isPanelOpen = true;
+  }
+
+  closePanel(): void {
+    this.isPanelOpen = false;
+    this.selectedOrder = null;
   }
 }

@@ -10,6 +10,7 @@ import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { BillingComponent } from './billing/billing.component';
 import { OrdersComponent } from './orders/orders.component';
+import { PaymentApprovalComponent } from './admin/payment-approval/payment-approval.component';
 
 const routes: Routes = [
   { path: 'restaurants', component: LandingPageComponent }, 
@@ -24,6 +25,8 @@ const routes: Routes = [
   { path: 'vendor/edit', component: EditRestaurantDataComponent },
   { path: 'vendor/history', component: HistoryComponent },
   { path: 'vendor/live-orders', component: LiveOrdersComponent },
+
+  { path: 'admin/approve', component: PaymentApprovalComponent}
 ];
 
 @NgModule({

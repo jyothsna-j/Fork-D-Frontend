@@ -10,6 +10,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./live-orders.component.css'],
 })
 export class LiveOrdersComponent implements OnInit {
+  userId:any;
   orders: any[] = [];
   selectedStatus: string = '';
   selectedOrder: any | null = null;
@@ -21,13 +22,13 @@ export class LiveOrdersComponent implements OnInit {
   constructor(private http: HttpClient, private snackBar: MatSnackBar, private orderService: OrderService, private userService: UserService) {}
 
   ngOnInit(): void {
-    let userId = this.userService.getUserId();
+    this.userId = this.userService.getUserId();
     this.fetchOrders();
     setInterval(() => this.fetchOrders(), 5000); // Polling every 5 sec
   }
 
   fetchOrders(): void {
-    this.orderService.getOrdersByRestaurantId(2).subscribe((data) => {
+    this.orderService.getOrdersByRestaurantId(this.userId).subscribe((data) => {
       console.log(data);
       this.orders = data;
     });

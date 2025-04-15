@@ -7,12 +7,11 @@
             mat-raised-button color="primary" 
             matBadge = "{{cartQuantity}}" 
             matBadgeColor="warn" 
-            (click) = "goToCart()"
+            (click) = "goToBilling()"
             class = "add-to-cart-btn"
         >
-            Add to Cart
+            Proceed to Billing
         </button>
-        <button mat-raised-button color="primary" class = "add-to-cart-btn">Buy Items Now</button>
         <mat-expansion-panel 
             *ngFor = "let  category of categorizedDishes | keyvalue"
             (opened)="panelOpenState.set(true)" 

@@ -28,6 +28,11 @@ export class RestaurantService {
     return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
   }
 
+  getRestaurantAddress(id: number) : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL: string = this.baseURL + 'restaurants/' + id + '/address'
+    return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
+  }
+
   getRestaurantByUserId(id: number) : Observable<HttpResponse<ApiResponse<any>>>{
     let URL: string = this.baseURL + 'restaurants/user/' + id;
     return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});

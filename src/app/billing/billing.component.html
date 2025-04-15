@@ -6,7 +6,6 @@
             <div *ngIf="isLoggedIn; else loginPrompt">
                 ✅ Welcome, {{ userName }}!
               </div>
-          
               <ng-template #loginPrompt>
                 ❌ You must be logged in to proceed.
               </ng-template>
@@ -29,16 +28,22 @@
                 </mat-form-field>
                 <button mat-button (click) = "checkDeliverability(address.get('address'))">Check Deliverability</button>
             </form>
-            <mat-error *ngIf="isDeliverable==false">Cant deliver to this location</mat-error>
-            <button mat-button matStepperNext [disabled] = "address.get('address')?.invalid || isDeliverable!=true">Next</button>
+            <br><mat-error *ngIf="isDeliverable==false">Cant deliver to this location</mat-error>
+            <br><mat-error *ngIf="isDeliverable==null">Check deliverability before proceeding</mat-error>
+            <button mat-raised-button matStepperNext [disabled] = "address.get('address')?.invalid || isDeliverable!=true">Next</button>
         </mat-step>
         <mat-step>
             <ng-template matStepLabel>Make the payment</ng-template>
+            <div class="payment">
+              <p>Please make a payment to this QR code before proceeding</p>
+              <p>Please not that the payment will be verified before the order is placed</p>
+              <img src="assets/upi-id.png">
+            </div>
             <button mat-raised-button color="primary" (click) = "paymentMade()">Payment Made</button>
         </mat-step>
     </mat-stepper>
 </div>  
 <div class="cart-card">
-    <app-cart></app-cart>
+    <app-cart [data]="deliveryCharge" (childEvent)="setTotalPrice($event)"></app-cart>
 </div>
 </div>

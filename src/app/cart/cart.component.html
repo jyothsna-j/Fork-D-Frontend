@@ -30,6 +30,24 @@
                 </div>
             </div>
         </mat-card>
+        <mat-card class="card" style="font-size:smaller;">
+          <div class="dish-row">
+            <div>Delivery Fee</div>
+            <ng-container *ngIf="deliveryCharge === 0; else showDeliveryCharge">
+                <button mat-icon-button matTooltip="You need to enter your drop location"
+                    class="tiny-icon-btn" color="warn">
+                  <mat-icon>info</mat-icon>
+                </button>
+            </ng-container>
+            <ng-template #showDeliveryCharge>
+                <div>₹{{ deliveryCharge }}</div>
+            </ng-template>
+          </div>
+          <div class="dish-row">
+            <div>Platform Fee</div>
+            <div>₹{{ platFormFee }}</div>
+        </div>
+        </mat-card>
         <mat-card class="card">
             <div class="dish-row">
                 <div><strong>TOTAL PRICE</strong></div>
@@ -37,5 +55,4 @@
             </div>
         </mat-card>
     </div>
-    <button mat-raised-button color="primary" (click)="goToBilling()">Buy Items Now</button>
 </ng-template>

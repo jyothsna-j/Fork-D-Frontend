@@ -83,7 +83,7 @@ export class RestaurantDetailComponent {
     this.cartQuantity =  _.sumBy(Object.values(this.cart), 'quantity');
   }
 
-  goToCart(){
-    this.router.navigate(['/cart'], {state: [this.restaurantId, this.cart]});
+  goToBilling(){
+    this.router.navigate(['/billing'], {state: [this.restaurantId, this.cart]});
   }
 }

@@ -21,6 +21,11 @@ export class OrderService {
     return this.http.get<any>(URL);
   }
 
+  getOrdersForApproval(){
+    let URL: string = this.baseURL + '/approve-payment';
+    return this.http.get<any>(URL);
+  }
+
   postOrder(order: any){
     let URL: string = this.baseURL
     this.http.post(URL, order).subscribe({

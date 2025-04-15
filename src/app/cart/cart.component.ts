@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import _ from "lodash";
 
@@ -12,7 +12,16 @@ export class CartComponent {
   cartData: { [key: string]: any } = {};
   isCartEmpty: boolean = true;
   prices: { [key: string]: number } = {};
-  totalPrice: number = 0; platformCharge: number = 5; deliveryCharge: number = 0;
+  totalPrice: number = 0; 
+  deliveryCharge: any;
+  
+  @Input() set data(value: any) {
+    this.deliveryCharge = value;
+    this.handleChange();
+  }
+  platFormFee = 2;
+
+  @Output() childEvent = new EventEmitter<number>();
 
   constructor(private router: Router) {}
 
@@ -43,11 +52,7 @@ export class CartComponent {
 
   handleChange(){
     this.prices = _.mapValues(this.cartData, (cartItem) => cartItem.price*cartItem.quantity);
-    this.totalPrice = _.reduce(_.values(this.prices), (sum, price) => sum + price, 0);
-  }
-
-  goToBilling(){
-    console.log(this.cartData);
-    this.router.navigate(['/billing'], {state: [this.restaurantId, this.cartData]});
+    this.totalPrice = _.reduce(_.values(this.prices), (sum, price) => sum + price, 0) + this.deliveryCharge + this.platFormFee;
+    this.childEvent.emit(this.totalPrice);
   }
 }

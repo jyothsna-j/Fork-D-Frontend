@@ -8,6 +8,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { DatePipe } from '@angular/common';
+
 import {MatToolbarModule } from '@angular/material/toolbar';
 import {MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -26,6 +28,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
@@ -39,6 +42,7 @@ import { BillingComponent } from './billing/billing.component';
 import { OrdersComponent } from './orders/orders.component';
 import { AuthInterceptor } from './Interceptor/auth.interceptor';
 import { AddDishDialogComponent } from './_modals/add-dish-dialog/add-dish-dialog.component';
+import { PaymentApprovalComponent } from './admin/payment-approval/payment-approval.component';
 
 
 @NgModule({
@@ -54,7 +58,8 @@ import { AddDishDialogComponent } from './_modals/add-dish-dialog/add-dish-dialo
     SignupComponent,
     BillingComponent,
     OrdersComponent,
-    AddDishDialogComponent
+    AddDishDialogComponent,
+    PaymentApprovalComponent
   ],
   imports: [
     BrowserModule,
@@ -80,9 +85,11 @@ import { AddDishDialogComponent } from './_modals/add-dish-dialog/add-dish-dialo
     MatStepperModule,
     MatDialogModule,
     MatMenuModule,
+    MatTooltipModule,
     ReactiveFormsModule
   ],
   providers: [
+    DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
