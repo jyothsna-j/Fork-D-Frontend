@@ -39,7 +39,7 @@ export class RestaurantService {
   }
 
   updateRestaurantImage(id: number, formData: any) : Observable<HttpResponse<ApiResponse<any>>>{
-    let URL: string = this.baseURL + 'restaurants/images/' + id;
+    let URL: string = this.baseURL + 'restaurants/image/' + id;
     return this.http.put<ApiResponse<any>>(URL, formData, {observe: 'response'});
   }
 
