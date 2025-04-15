@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { OrderService } from '../services/order.service';
 import { DropLocations, DropPoint } from '../_models/address';
 import { UEngageServiceService } from '../services/u-engage-service.service';
+import { RestaurantService } from '../services/restaurant.service';
 
 @Component({
   selector: 'app-billing',
@@ -16,6 +17,7 @@ export class BillingComponent {
 
   //user values
   userName: any;
+  selectedPickup: any;
 
   //restaurant values
   restaurantId: any;
@@ -23,13 +25,15 @@ export class BillingComponent {
   address: FormGroup;
   totalPrice: number = 0;
   itemValues: any;
+  restaurantAddress: any;
 
   //
   dropLocations: DropPoint[] = DropLocations;
   deliveryCharge: any = 0;
   isDeliverable : boolean | null = null;
 
-  constructor( private userService: UserService, private fb: FormBuilder, private router: Router, private orderService: OrderService, private uEngageService: UEngageServiceService) {
+  constructor( private userService: UserService, private fb: FormBuilder, private router: Router, private restaurantService: RestaurantService,
+                private orderService: OrderService, private uEngageService: UEngageServiceService) {
     this.address = this.fb.group({
       address: ['', Validators.required],
     });
@@ -41,6 +45,18 @@ export class BillingComponent {
 
     this.isLoggedIn = this.userService.isLoggedIn();
     this.userName = this.userService.getUsername();
+    
+    this.restaurantService.getRestaurantAddress(this.restaurantId).subscribe({
+      next : (response) =>{
+        if(response.body){
+          this.restaurantAddress = response.body.data;
+        }
+      },
+      error:(error) => {
+        console.log(error);
+        //TODO: add popup for handling
+      }
+    })
   } 
 
   setTotalPrice(data: number) {
@@ -48,17 +64,17 @@ export class BillingComponent {
   }
 
   checkDeliverability(address: any){
-    const selectedPickup = this.dropLocations.find(loc => loc.key === address.value);
-    if(selectedPickup){
+    this.selectedPickup = this.dropLocations.find(loc => loc.key === address.value);
+    if(this.selectedPickup){
       var payload = {
         "store_id": "89",
         "pickupDetails": {
-          "latitude": "28.39232449",
-		      "longitude": "77.34029003"
+          "latitude": this.restaurantAddress.latitude,
+		      "longitude": this.restaurantAddress.longitude
         },
         "dropDetails": {
-          latitude: selectedPickup.lat,
-          longitude: selectedPickup.lng
+          latitude: this.selectedPickup.lat,
+          longitude: this.selectedPickup.lng
         }
       }
       console.log(payload);
@@ -76,8 +92,6 @@ export class BillingComponent {
         }
       })
     }
-    
-    
   }
 
   paymentMade(){
@@ -91,16 +105,22 @@ export class BillingComponent {
       amount: this.totalPrice,
       orderStatus: "PAYMENT_APPROVAL_PENDING",
       orderDate: Date.now(),
-      items: itemsConverter(this.itemValues)
+      items: itemsConverter(this.itemValues),
+      pickupAddress: {
+        address: this.restaurantAddress.address,
+        latitude: this.restaurantAddress.latitude,
+		    longitude: this.restaurantAddress.longitude
+      },
+      dropAddress: {
+        address: this.selectedPickup.name,
+        latitude: this.selectedPickup.lat,
+		    longitude: this.selectedPickup.lng
+      }
     }
-  
     console.log(order);
     this.orderService.postOrder(order);
     this.router.navigate(['/orders']);
   }
-
-            
-
 }
 
 function itemsConverter(items: any) {

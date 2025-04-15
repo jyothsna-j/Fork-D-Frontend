@@ -42,6 +42,10 @@ export class SignupComponent {
       this.authService.signup(this.signupForm.value).subscribe({
         next:(response) => {
           if(response.body){
+            this.authService.setToken(response.body.data);
+            this.router.navigate(['']).then(() => {
+              window.location.reload();
+            });
           }
         },
         error: (error) => {
@@ -51,15 +55,6 @@ export class SignupComponent {
           })
         }
       });
-      //   (token: string) => {
-      //     this.authService.setToken(token);
-      //     this.router.navigate(['']).then(() => {
-      //       window.location.reload();
-      //     });
-      //   },
-      //   error => {
-      //     console.log('Signup failed. Try a different username.');
-      //   }
       this.signupForm.addControl('confirmPassword', new FormControl(this.signupForm.value.password , Validators.required));
     }
   }

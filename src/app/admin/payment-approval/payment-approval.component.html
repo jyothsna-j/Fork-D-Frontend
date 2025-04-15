@@ -1,1 +1,50 @@
-<p>payment-approval works!</p>
+<div class="content">
+    <h1>Orders To Approve</h1>
+    <table mat-table [dataSource] = "ordersForApproval" class = "mat-elevation-z8">
+        
+        <ng-container matColumnDef="orderId">
+            <th mat-header-cell *matHeaderCellDef>Order Id</th>
+            <td mat-cell *matCellDef="let order">{{ order.orderId }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+            <th mat-header-cell *matHeaderCellDef>Username</th>
+            <td mat-cell *matCellDef="let order">{{ order.user.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="restaurantName">
+            <th mat-header-cell *matHeaderCellDef>Restaurant Name</th>
+            <td mat-cell *matCellDef="let order">{{ order.restaurant.restaurantName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderDate">
+            <th mat-header-cell *matHeaderCellDef>Order Date</th>
+            <td mat-cell *matCellDef="let order">{{ order.orderDate | date:'yyyy-MM-dd' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="orderTime">
+            <th mat-header-cell *matHeaderCellDef>Order Time</th>
+            <td mat-cell *matCellDef="let order">{{order.orderDate | date:'HH:mm' }}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Amount</th>
+            <td mat-cell *matCellDef="let order">{{ order.amount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="approveButton">
+            <th mat-header-cell *matHeaderCellDef>Payment Made?</th>
+            <td mat-cell *matCellDef="let order">
+                <button mat-icon-button color="primary" class="mini-button" (click) = "approve(order.orderId)">
+                    <mat-icon>check</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" class="mini-button" (click) = "cancel(order.orderId)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

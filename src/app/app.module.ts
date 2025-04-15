@@ -8,6 +8,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { DatePipe } from '@angular/common';
+
 import {MatToolbarModule } from '@angular/material/toolbar';
 import {MatButtonModule } from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -87,6 +89,7 @@ import { PaymentApprovalComponent } from './admin/payment-approval/payment-appro
     ReactiveFormsModule
   ],
   providers: [
+    DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
