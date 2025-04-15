@@ -1,8 +1,8 @@
 <div class = "restaurant-header">
     <h1>{{restaurantDetails.restaurantName}}</h1>
 </div>
-<div class = "menu">
-    <mat-accordion *ngIf="categorizedDishes && categories.length" color = "accent">
+<div class = "menu" *ngIf="!loading; else loadingTemplate">
+    <mat-accordion color = "accent">
         <button 
             mat-raised-button color="primary" 
             matBadge = "{{cartQuantity}}" 
@@ -50,3 +50,8 @@
         <br>
     </mat-accordion>
 </div>
+
+<!-- Loading Template -->
+<ng-template #loadingTemplate>
+    <div class="loading">Loading...</div>
+</ng-template>

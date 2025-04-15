@@ -18,6 +18,7 @@ export class RestaurantDetailComponent {
   cart: any = [];
   cartQuantity = 0;
   readonly panelOpenState = signal(false);
+  loading = true;
 
   constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService) {}
 
@@ -58,6 +59,7 @@ export class RestaurantDetailComponent {
             quantity: 0,
             price: dish.price
           }));
+          this.loading = false
         }
       },
       error:(error) => {
