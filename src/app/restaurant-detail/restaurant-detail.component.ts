@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestaurantService } from '../services/restaurant.service';
 import _ from "lodash";
@@ -20,7 +20,8 @@ export class RestaurantDetailComponent {
   readonly panelOpenState = signal(false);
   loading = true;
 
-  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private restaurantService: RestaurantService, 
+    private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.restaurantId = Number(this.route.snapshot.paramMap.get('id')); // Get ID from URL
@@ -59,7 +60,8 @@ export class RestaurantDetailComponent {
             quantity: 0,
             price: dish.price
           }));
-          this.loading = false
+          this.loading = false;
+          this.cdr.markForCheck(); 
         }
       },
       error:(error) => {
