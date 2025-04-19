@@ -5,11 +5,24 @@
         <p><strong>Customer:</strong> {{ selectedOrder.user.name }}</p>
         <p><strong>Total Price:</strong> ₹{{ selectedOrder.amount }}</p>
         <h3>Items:</h3>
-        <ul>
-          <li *ngFor="let item of selectedOrder.items">{{ item.dish.dishName }} (x{{ item.quantity }}) - ₹{{item.price}}</li>
-        </ul>
+        <table class = "items-table">
+          <thead>
+            <tr>
+              <th>Dish</th>
+              <th>Qty</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of selectedOrder.items">
+              <td>{{ item.dish.dishName }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>₹{{ item.price }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <button mat-raised-button color="warn" (click)="closePanel()">Close</button>
+      <button mat-raised-button color="warn" (click)="closePanel()" style = "margin:1%;">Close</button>
     </mat-sidenav>
   
     <div class="content">
@@ -45,6 +58,18 @@
         <ng-container matColumnDef="total">
           <th mat-header-cell *matHeaderCellDef>Total</th>
           <td mat-cell *matCellDef="let order">₹{{ order.amount }}</td>
+        </ng-container>
+
+        <!-- Order Date -->
+        <ng-container matColumnDef="orderDate">
+          <th mat-header-cell *matHeaderCellDef>Order Date</th>
+          <td mat-cell *matCellDef="let order">{{ order.orderDate | date:'yyyy-MM-dd' }}</td>
+        </ng-container>
+
+        <!-- Order Time -->
+        <ng-container matColumnDef="orderTime">
+          <th mat-header-cell *matHeaderCellDef>Order Time</th>
+          <td mat-cell *matCellDef="let order">{{order.orderDate | date:'HH:mm' }}</td>
         </ng-container>
   
         <!-- Status Column -->

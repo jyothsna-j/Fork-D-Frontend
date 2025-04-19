@@ -16,8 +16,8 @@ export class LiveOrdersComponent implements OnInit {
   selectedOrder: any | null = null;
   isPanelOpen = false;
 
-  orderStatuses = ['PENDING', 'PREPARING', 'PREPARED', 'IN TRANSIT','DELIVERED'];
-  displayedColumns: string[] = ['id', 'customer', 'total', 'status', 'update'];
+  orderStatuses = ['PENDING', 'PREPARING', 'PREPARED', 'OUT_FOR_DELIVERY'];
+  displayedColumns: string[] = ['id', 'customer', 'total', 'orderDate', 'orderTime', 'status', 'update'];
 
   constructor(private http: HttpClient, private snackBar: MatSnackBar, private orderService: OrderService, private userService: UserService) {}
 
@@ -29,8 +29,9 @@ export class LiveOrdersComponent implements OnInit {
 
   fetchOrders(): void {
     this.orderService.getOrdersByRestaurantId(this.userId).subscribe((data) => {
-      console.log(data);
-      this.orders = data;
+      const allowedStatuses = [ 'ORDER_APPROVED', 'PENDING', 'PREPARING', 'PREPARED'];
+  
+      this.orders = data.filter((order: any) => allowedStatuses.includes(order.orderStatus));
     });
   }
 

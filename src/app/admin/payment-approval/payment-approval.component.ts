@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { OrderService } from 'src/app/services/order.service';
+import { UEngageServiceService } from 'src/app/services/u-engage-service.service';
 
 @Component({
   selector: 'app-payment-approval',
@@ -10,9 +11,9 @@ export class PaymentApprovalComponent {
 
   ordersForApproval : any[] = [];
 
-  displayedColumns = ['orderId', 'username', 'restaurantName', 'orderDate', 'orderTime', 'amount', 'approveButton']
+  displayedColumns = ['orderId', 'username', 'restaurantName', 'orderDate', 'orderTime', 'amount', 'approveButton'];
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService, private uEngageService : UEngageServiceService) {}
 
   ngOnInit(){
     this.orderService.getOrdersForApproval().subscribe({
@@ -23,11 +24,24 @@ export class PaymentApprovalComponent {
   }
 
   approve(orderId: any){
+    const order = this.ordersForApproval.find(o => o.orderId === orderId);
+    this.uEngageService.createTask(order).subscribe({
+      next: (response) => {
+        alert(response);
+        console.log(response);
+        this.ordersForApproval = this.ordersForApproval.filter(order => order.orderId !== orderId);
+      },
+      error: (error) =>{
 
+      }
+    })
   }
 
   cancel(orderId: any){
+    this.orderService.updateOrderStatus(orderId, 'INVALID_PAYMENT')
 
+    this.ordersForApproval = this.ordersForApproval.filter(order => order.orderId !== orderId); // This removes it from the array
+    
   }
   
 }

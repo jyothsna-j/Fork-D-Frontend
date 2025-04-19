@@ -16,4 +16,9 @@ export class UEngageServiceService {
     let URL: string = this.baseURL + '/getServiceability';
     return this.http.post<any>(URL, payload, {observe: 'response'});
   }
+
+  createTask(payload: any): Observable<any>{
+    let URL: string = this.baseURL + '/createTask';
+    return this.http.post<any>(URL, payload, {observe: 'response'});
+  }
 }

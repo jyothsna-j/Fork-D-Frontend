@@ -66,18 +66,18 @@ export class BillingComponent {
   checkDeliverability(address: any){
     this.selectedPickup = this.dropLocations.find(loc => loc.key === address.value);
     if(this.selectedPickup){
+      console.log(this.restaurantAddress)
       var payload = {
-        "store_id": "89",
-        "pickupDetails": {
-          "latitude": this.restaurantAddress.latitude,
-		      "longitude": this.restaurantAddress.longitude
+        store_id: 89,
+        pickupDetails: {
+          latitude: this.restaurantAddress.latitude,
+		      longitude: this.restaurantAddress.longitude
         },
-        "dropDetails": {
+        dropDetails: {
           latitude: this.selectedPickup.lat,
           longitude: this.selectedPickup.lng
         }
       }
-      console.log(payload);
       this.uEngageService.getServiceability(payload).subscribe({
         next:(response) => {
           if(response.body){
@@ -95,6 +95,7 @@ export class BillingComponent {
   }
 
   paymentMade(){
+    const orderDate = new Date().toISOString().slice(0, 19); // "yyyy-MM-ddTHH:mm:ss"
     var order = {
       user: {
         userId: this.userService.getUserId()
@@ -104,7 +105,7 @@ export class BillingComponent {
       },
       amount: this.totalPrice,
       orderStatus: "PAYMENT_APPROVAL_PENDING",
-      orderDate: Date.now(),
+      orderDate: orderDate,
       items: itemsConverter(this.itemValues),
       pickupAddress: {
         address: this.restaurantAddress.address,

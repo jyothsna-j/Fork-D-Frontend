@@ -1,29 +1,40 @@
 .sidenav-container {
-    height: 100vh;
-    display: flex;
-  }
-  
-  .details-panel {
-    width: 300px;
-    padding: 20px;
-  }
-  
-  .content {
-    padding: 20px;
-    flex-grow: 1;
-  }
-  
-  .mat-table {
-    width: 100%;
-  }
-  
-  a {
-    text-decoration: none;
-    color: #1976d2;
-    cursor: pointer;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
+  display: flex;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.items-table th, td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.details-panel {
+  width: 300px;
+  padding: 20px;
+}
+
+.content {
+  padding: 20px;
+  flex-grow: 1;
+}
+
+.mat-table {
+  width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: #1976d2;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
   
