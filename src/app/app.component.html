@@ -3,14 +3,15 @@
     <h1>Fork'D</h1>
     <div class = "buttons">
         <div *ngIf="!isLoggedIn">
-          <button mat-raised-button color = "accent" (click)="openLogin()">Log In</button>
-          <button mat-raised-button color = "accent" (click)="openSignup()">Sign Up</button>
+          <button mat-button class="fancy-link" (click)="openLogin()">Log In</button>
+          <button mat-button class="fancy-link" (click)="openSignup()">Sign Up</button>
         </div>
       
         <div *ngIf="isLoggedIn">
           <button mat-button class="fancy-link" [matMenuTriggerFor]="menu">Profile</button>
           <mat-menu #menu="matMenu">
             <p mat-menu-item>Welcome, {{user}}!</p>
+            <button mat-button color = "accent" style ="width: 100%;" (click) = "orders()" *ngIf = "role==='CUSTOMER'">Orders</button>
             <button mat-button color = "accent" style ="width: 100%;" (click) = "logout()">Log Out</button>
           </mat-menu>
         </div>

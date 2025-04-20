@@ -33,8 +33,15 @@ export class AppComponent {
     this.router.navigate(['/signup']);
   }
 
+  orders(){
+    this.router.navigate(['orders']);
+  }
+
   logout() {
     this.authService.logout();
     this.isLoggedIn = false;
+    this.router.navigate(['']).then(() => {
+      window.location.reload();
+    });
   }
 }

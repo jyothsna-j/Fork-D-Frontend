@@ -2,7 +2,7 @@
   position: fixed;
   top: 0%;
   left: 0%;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   overflow: hidden;
   z-index: -1;
@@ -12,12 +12,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  min-width: 100%;
-  min-height: 100%;
   width: auto;
-  height: auto;
+  height: 100vw;
   transform: translate(-50%, -50%) rotate(270deg);
-  object-fit: contain;
+  object-fit:cover;
 }
 
 .overlay{
@@ -29,10 +27,11 @@
   width: auto;
   height: auto;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.5) !important; /* Black with 70% opacity */
+  background-color: rgba(0, 0, 0, 0.7) !important; /* Black with 70% opacity */
   display: flex; /* Enables flexbox */
   justify-content: center; /* Centers horizontally */
   align-items: center; /* Centers vertically */
+  z-index: 10;
 }
 
 .intro-card{
@@ -40,7 +39,6 @@
   color: white;
   padding: 2rem;
   border-radius: 10px;
-  
   border: none !important; /* Removes border */
   box-shadow: none !important; /* Removes shadow */
 }
@@ -56,18 +54,53 @@
 /* --- After Scrolling, the restaurant section appears --- */
 .restaurant-section {
   background-color: white; /* Removes the video background */
-  padding: 5% 0;
+  padding: 2% 0;
   position: relative;
   overflow: hidden;
 }
 
-.restaurant-title {
-  padding: 0 10vw;
+.restaurant-title{
   text-align: center;
-  font-size: large;
-  font-weight: 500;
-  margin-top: 2rem;
-  color: black;
+}
+
+.restaurant-title span {
+  color: #2f302f;
+  font-family: 'Arial';
+  text-transform: uppercase;
+  display: inline-block;
+  transform: rotateY(0deg);
+  transition: 0.5s;
+  animation: bounce 0.4s ease infinite alternate;
+  position: relative; /* Added this to allow 'top' property */
+}
+/* .restaurant-title span:nth-child(5n + 1) {
+  animation-delay: 0.1s;
+}
+.restaurant-title span:nth-child(5n + 2) {
+  animation-delay: 0.2s;
+}
+.restaurant-title span:nth-child(5n + 3) {
+  animation-delay: 0.3s;
+}
+.restaurant-title span:nth-child(5n + 4) {
+  animation-delay: 0.4s;
+}
+.restaurant-title span:nth-child(5n + 5) {
+  animation-delay: 0.5s; */
+/* } */
+
+@keyframes bounce {
+  100% {
+      top: -20px; 
+      text-shadow: 0 1px 0 #ccc,
+                   0 2px 0 #ccc,
+                   0 3px 0 #ccc,
+                   0 4px 0 #ccc,
+                   0 5px 0 #ccc,
+                   0 6px 0 #ccc,
+                   0 7px 0 #ccc,
+                   0 8px 0 #ccc;
+  }
 }
 
 .card-container {
@@ -91,9 +124,9 @@
   
 .card {
   flex: 0 0 auto;
-  min-width: 20%;  /*Each card takes 25% of the container width*/
+  min-width: 200px;  /*Each card takes 25% of the container width*/
   max-width: 20%;
-  height: 35vh;  /*30% of viewport height*/
+  height: 30vh;  /*30% of viewport height*/
   margin-right: 5%;
   flex-direction: column;
   justify-content: center;
@@ -117,10 +150,10 @@
 
 .view-res-button{
   position: relative;
-  bottom: 5%;
+  bottom: 3%;
   left: 50%;
   transform: translateX(-50%);
-  padding: 5%;
+  padding: 3%;
   width: 90%;
   text-transform: capitalize;
   border: none;
@@ -150,7 +183,7 @@
 } */
  .image-info h2{
   text-transform: uppercase;
-  margin: 5px
+  margin: 0;
  }
 
  .image-info p{
@@ -158,6 +191,8 @@
   line-height: 20px;
   overflow: hidden;
   opacity: 0.5;
+  padding:0;
+  margin:0;
  }
 
 .nav-btn {
@@ -169,12 +204,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: black; */
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 100%, rgb(109, 104, 104) 0%);
+  background-color: linear-gradient(90deg, rgba(0, 0, 0, 0) 100%, rgb(109, 104, 104) 0%);
   color: white;
   cursor: pointer;
   z-index: 2;
-  
   transition: opacity 0.3s;
 }
 
