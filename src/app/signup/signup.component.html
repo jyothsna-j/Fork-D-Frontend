@@ -23,6 +23,15 @@
             <mat-error *ngIf="signupForm.get('email')?.hasError('email')">Invalid email</mat-error>
         </mat-form-field>
         <br><br>
+        <label>Contact Number </label>
+        <mat-form-field appearance="outline">
+            <mat-label>Contact Number</mat-label>
+            <input matInput formControlName="contactNumber" type="tel"  pattern="[0-9]*" inputmode="numeric" required />
+            <mat-error *ngIf="signupForm.get('contactNumber')?.hasError('required')">Contact Number is required</mat-error>
+            <mat-error *ngIf="signupForm.get('contactNumber')?.hasError('minlength')">Min 10 characters</mat-error>
+            <mat-error *ngIf="signupForm.get('contactNumber')?.hasError('pattern')">Only Numbers</mat-error>
+        </mat-form-field>
+        <br><br>
         <label>Password </label>
         <mat-form-field appearance="outline">
             <mat-label>Password</mat-label>
