@@ -1,10 +1,11 @@
+<div class = "bg">
 <div class = "restaurant-header">
     <h1>{{restaurantDetails.restaurantName}}</h1>
 </div>
 <div class = "menu" *ngIf="!loading; else loadingTemplate">
     <mat-accordion color = "accent">
         <button 
-            mat-raised-button color="primary" 
+            mat-raised-button color="accent" 
             matBadge = "{{cartQuantity}}" 
             matBadgeColor="warn" 
             (click) = "goToBilling()"
@@ -18,7 +19,9 @@
             (closed)="panelOpenState.set(false)" 
         >
             <mat-expansion-panel-header>
-                <mat-panel-title>{{category.key}}</mat-panel-title>
+                <mat-panel-title>
+                    <p class="category">{{category.key}}</p>
+                </mat-panel-title>
                 <mat-panel-description>
                     <!-- Currently I am {{panelOpenState() ? 'open' : 'closed'}} -->
                 </mat-panel-description>
@@ -27,10 +30,8 @@
                 <mat-card class="card" *ngFor="let dish of categorizedDishes[category.key]">
                     <mat-grid-list cols="2" rowHeight="11:1">
                         <mat-grid-tile>
-                            <mat-card-title>
                                 {{dish.dishName}}<br>
                                 ₹{{dish.price}}
-                            </mat-card-title>
                         </mat-grid-tile>
                         <mat-grid-tile>
                             <div class="cart-buttons">
@@ -55,3 +56,4 @@
 <ng-template #loadingTemplate>
     <div class="loading">Loading...</div>
 </ng-template>
+</div>
