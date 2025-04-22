@@ -7,6 +7,9 @@
     padding: 20px;
   }
   
+  table{
+    margin: 3%;
+  }
   .content {
     padding: 20px;
     flex-grow: 1;
