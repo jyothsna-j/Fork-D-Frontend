@@ -9,6 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDishDialogComponent } from 'src/app/_modals/add-dish-dialog/add-dish-dialog.component';
 import { UserService } from 'src/app/services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-restaurant-data',
@@ -17,6 +18,9 @@ import { UserService } from 'src/app/services/user.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditRestaurantDataComponent {
+
+  private _snackBar = inject(MatSnackBar);
+
   restaurantUserId: string | null = '';
   restaurantId: number = 0;
   restaurantDetails: any = {};
@@ -37,7 +41,7 @@ export class EditRestaurantDataComponent {
     this.restaurantService.getRestaurantByUserId(id).subscribe({
       next: (response) => {
         if(response.status===204 || response.body===null){
-          //TODO: implement a snack bar
+          this._snackBar.open('Restaurant Details not found', 'Dismiss', {duration: 3000})
         }
         else{
           this.restaurantDetails = response.body.data
@@ -49,7 +53,7 @@ export class EditRestaurantDataComponent {
         }
       },
       error: (error) => {
-        //TODO: implemet a snack bar
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
   }
@@ -73,7 +77,7 @@ export class EditRestaurantDataComponent {
       },
       error:(error) => {
         console.log(error);
-        //TODO: add popup for handling
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
   }
@@ -138,12 +142,11 @@ remove(cuisine: any): void {
     this.restaurantService.updateRestaurantCuisine(this.restaurantId, payload).subscribe({
       next: (response) => {
         if(response.body){
-          console.log(response.body);
-          //TODO: snack bar here
+          this._snackBar.open(response.body.message, 'Dismiss', {duration: 3000})
         }
       },
       error: (error) => {
-        //TODO - snack bar
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
         console.log(error);
       }
     });
@@ -159,8 +162,7 @@ remove(cuisine: any): void {
 
   uploadFile() {
     if (!this.selectedFile) {
-      //TODO: change alerts into snackbar
-      alert('Please select a file first');
+      this._snackBar.open('Please select a file first', 'Dismiss', {duration: 3000});
       return;
     }
 
@@ -171,11 +173,11 @@ remove(cuisine: any): void {
       next: (response) => {
         if(response.body){
           console.log(response.body);
-          //TODO: snack bar here
+          this._snackBar.open(response.body.message, 'Dismiss', {duration: 3000});
         }
       },
       error: (error) => {
-        //TODO - snack bar
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000});
         console.log(error);
       }
     });
@@ -184,7 +186,7 @@ remove(cuisine: any): void {
   //CATEGORIES
   addCategory(categoryKey: string) {
     if(categoryKey==''){
-      alert('cant be empty');
+      this._snackBar.open('Category cannot be empty', 'Dismiss', {duration: 3000});
       return;
     }
     const currentCategories = this.categoriesSubject.getValue();
@@ -232,7 +234,7 @@ remove(cuisine: any): void {
           },
           error:(error) => {
             console.log(error);
-            //TODO: add popup for handling
+            this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000});
           }
         });
       }
@@ -285,7 +287,7 @@ remove(cuisine: any): void {
       },
       error:(error) => {
         console.log(error);
-        //TODO: add popup for handling
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000});
       }
     });
     
@@ -309,7 +311,7 @@ remove(cuisine: any): void {
       },
       error:(error) => {
         console.log(error);
-        //TODO: add popup for handling
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000});
       }
     });
   }

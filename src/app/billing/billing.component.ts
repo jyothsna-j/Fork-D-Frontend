@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import _ from "lodash";
@@ -7,6 +7,7 @@ import { OrderService } from '../services/order.service';
 import { DropLocations, DropPoint } from '../_models/address';
 import { UEngageServiceService } from '../services/u-engage-service.service';
 import { RestaurantService } from '../services/restaurant.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-billing',
@@ -14,6 +15,8 @@ import { RestaurantService } from '../services/restaurant.service';
   styleUrls: ['./billing.component.css']
 })
 export class BillingComponent {
+
+  private _snackBar = inject(MatSnackBar);
 
   //user values
   userName: any;
@@ -54,7 +57,7 @@ export class BillingComponent {
       },
       error:(error) => {
         console.log(error);
-        //TODO: add popup for handling
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     })
   } 
@@ -81,14 +84,13 @@ export class BillingComponent {
       this.uEngageService.getServiceability(payload).subscribe({
         next:(response) => {
           if(response.body){
-            //TODO - handle failure
             this.deliveryCharge = response.body.payouts.total;
             this.isDeliverable=true
           }
         },
         error:(error) => {
           console.log(error);
-          //TODO: add popup for handling
+          this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
         }
       })
     }
@@ -122,14 +124,14 @@ export class BillingComponent {
     this.orderService.postOrder(order).subscribe({
       next: (response) => {
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Error inserting order', 'Dismiss', {duration: 3000})
         }
         else{
           this.router.navigate(['/orders']);
         }
       },
       error: (error: any) => {
-        //TODO
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
     

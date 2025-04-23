@@ -1,7 +1,8 @@
-import { Component, ViewChild,  ElementRef } from '@angular/core';
+import { Component, ViewChild,  ElementRef, inject } from '@angular/core';
 import { RestaurantService } from '../services/restaurant.service';
 import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-landing-page',
@@ -10,6 +11,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class LandingPageComponent {
   @ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
+
+  private _snackBar = inject(MatSnackBar);
 
   restaurants: any= [];
 
@@ -23,7 +26,7 @@ export class LandingPageComponent {
     this.restaurantService.getRestaurants().subscribe({
       next: (response) => {
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Restaurants not found', 'Dismiss', {duration: 3000})
         }
         else{
           response.body.data.forEach((restaurant: any) => {
@@ -43,7 +46,8 @@ export class LandingPageComponent {
         }
       },
       error: (error: any) => {
-        //TODO
+        console.log(error);
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
   }

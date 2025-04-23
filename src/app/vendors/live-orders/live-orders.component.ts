@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrderService } from 'src/app/services/order.service';
@@ -10,6 +10,9 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./live-orders.component.css'],
 })
 export class LiveOrdersComponent implements OnInit {
+
+  private _snackBar = inject(MatSnackBar);
+  
   userId:any;
   orders: any[] = [];
   selectedStatus: string = '';
@@ -31,7 +34,7 @@ export class LiveOrdersComponent implements OnInit {
     this.orderService.getOrdersByRestaurantId(this.userId).subscribe({
       next: (response) => {
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Orders not found', 'Dismiss', {duration: 3000})
         }
         else{
           const allowedStatuses = [ 'ORDER_APPROVED', 'PENDING', 'PREPARING', 'PREPARED'];
@@ -39,7 +42,7 @@ export class LiveOrdersComponent implements OnInit {
         }
       },
       error: (error: any) => {
-        //TODO
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000 });
       }
     });
   }
@@ -54,14 +57,14 @@ export class LiveOrdersComponent implements OnInit {
     this.orderService.updateOrderStatus(order.orderId, order.orderStatus).subscribe({
       next: (response) => {
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Error updating status', 'Dismiss', {duration: 3000})
         }
         else{
           this.snackBar.open('Order status updated', 'OK', { duration: 2000 })
         }
       },
       error: (error: any) => {
-        //TODO
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
     

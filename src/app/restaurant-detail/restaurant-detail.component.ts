@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RestaurantService } from '../services/restaurant.service';
 import _ from "lodash";
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-restaurant-detail',
@@ -10,6 +11,9 @@ import _ from "lodash";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RestaurantDetailComponent {
+
+  private _snackBar = inject(MatSnackBar);
+
   restaurantId!: number;
   restaurantDetails: any;
   dishes: any;
@@ -34,7 +38,7 @@ export class RestaurantDetailComponent {
     this.restaurantService.getRestaurantById(id).subscribe({
       next: (response) =>{
         if(response.status === 204 || response.body === null){
-          //TODO - SNACK BAR
+          this._snackBar.open('Restaurants not found', 'Dismiss', {duration: 3000})
           return;
         }
         else{
@@ -48,7 +52,7 @@ export class RestaurantDetailComponent {
     this.restaurantService.getDishes(id).subscribe({
       next:(response) => {
         if(response.status===204){
-          //TODO: make a snackbar
+          this._snackBar.open('Dishes not found', 'Dismiss', {duration: 3000})
         }
         else{
           this.dishes = response.body?.data;
@@ -66,7 +70,7 @@ export class RestaurantDetailComponent {
       },
       error:(error) => {
         console.log(error);
-        //TODO: add popup for handling
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
   }

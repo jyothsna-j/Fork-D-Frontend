@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { OrderService } from '../services/order.service';
 import _ from 'lodash';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-orders',
@@ -10,6 +11,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ['./orders.component.css']
 })
 export class OrdersComponent {
+
+  private _snackBar = inject(MatSnackBar);
 
   safeUrl!: SafeResourceUrl;
 
@@ -37,7 +40,7 @@ export class OrdersComponent {
     this.orderService.getOrdersByCustomerId(id).subscribe({
       next: (response) =>{
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Orders not found', 'Dismiss', {duration: 3000})
         }
         else{
           orders = response.body.data;
@@ -52,7 +55,7 @@ export class OrdersComponent {
         }
       },
       error: (error: any) => {
-        //TODO
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
 
@@ -72,7 +75,7 @@ export class OrdersComponent {
     this.orderService.getRiderDetails(order.orderId).subscribe({
       next: (response) => {
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Rider Details not found', 'Dismiss', {duration: 3000})
         }
         else{
           order.riderDetails = response.body.data;
@@ -81,7 +84,7 @@ export class OrdersComponent {
         }
       },
       error: (error) => {
-        //TODO
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
     this.selectedOrder = order;

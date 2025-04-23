@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrderService } from 'src/app/services/order.service';
 import { UEngageServiceService } from 'src/app/services/u-engage-service.service';
 
@@ -8,6 +9,8 @@ import { UEngageServiceService } from 'src/app/services/u-engage-service.service
   styleUrls: ['./payment-approval.component.css']
 })
 export class PaymentApprovalComponent {
+
+  private _snackBar = inject(MatSnackBar);
 
   ordersForApproval : any[] = [];
 
@@ -19,14 +22,14 @@ export class PaymentApprovalComponent {
     this.orderService.getOrdersForApproval().subscribe({
       next: (response) =>{
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Orders not found', 'Dismiss', {duration: 3000})
         }
         else{
           this.ordersForApproval = response.body.data;
         }
       },
       error: (error: any) => {
-        //TODO
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     })
   }
@@ -35,9 +38,9 @@ export class PaymentApprovalComponent {
     const order = this.ordersForApproval.find(o => o.orderId === orderId);
     this.uEngageService.createTask(order).subscribe({
       next: (response) => {
-        alert(response);
         console.log(response);
         this.ordersForApproval = this.ordersForApproval.filter(order => order.orderId !== orderId);
+        this._snackBar.open('Processed Successfully', 'Dismiss', {duration: 3000});
       },
       error: (error) =>{
 
@@ -49,14 +52,14 @@ export class PaymentApprovalComponent {
     this.orderService.updateOrderStatus(orderId, 'INVALID_PAYMENT').subscribe({
       next: (response) => {
         if(response.body===null){
-          //TODO: make a snackbar
+          this._snackBar.open('Error updating status', 'Dismiss', {duration: 3000})
         }
         else{
           this.ordersForApproval = this.ordersForApproval.filter(order => order.orderId !== orderId); // This removes it from the array
         }
       },
       error: (error: any) => {
-        //TODO
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     });
     
