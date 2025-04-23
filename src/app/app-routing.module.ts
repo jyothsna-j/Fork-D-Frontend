@@ -11,22 +11,28 @@ import { SignupComponent } from './signup/signup.component';
 import { BillingComponent } from './billing/billing.component';
 import { OrdersComponent } from './orders/orders.component';
 import { PaymentApprovalComponent } from './admin/payment-approval/payment-approval.component';
+import { authGuard } from './auth.guard';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 const routes: Routes = [
   { path: 'restaurants', component: LandingPageComponent }, 
   { path: 'restaurant/:id', component: RestaurantDetailComponent },
-  { path: 'cart', component: CartComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'billing', component: BillingComponent },
-  { path: 'orders', component: OrdersComponent },
+  { path: 'cart', component: CartComponent},
+  { path: 'billing', component: BillingComponent},
+  { path: 'orders', component: OrdersComponent, canActivate: [authGuard],  data: { role: 'CUSTOMER' } },
   { path: '', redirectTo: '/restaurants', pathMatch: 'full' },
 
-  { path: 'vendor/edit', component: EditRestaurantDataComponent },
-  { path: 'vendor/history', component: HistoryComponent },
-  { path: 'vendor/live-orders', component: LiveOrdersComponent },
+  { path: 'vendor/edit', component: EditRestaurantDataComponent, canActivate: [authGuard],  data: { role: 'VENDOR' } },
+  { path: 'vendor/history', component: HistoryComponent, canActivate: [authGuard],  data: { role: 'VENDOR' } },
+  { path: 'vendor/live-orders', component: LiveOrdersComponent, canActivate: [authGuard],  data: { role: 'VENDOR' } },
 
-  { path: 'admin/approve', component: PaymentApprovalComponent}
+  { path: 'admin/approve', component: PaymentApprovalComponent, canActivate: [authGuard],  data: { role: 'ADMIN' }},
+
+  { path: 'unauthorized', component: UnauthorizedComponent }, 
+  { path: 'forbidden', component: ForbiddenComponent }, 
 ];
 
 @NgModule({

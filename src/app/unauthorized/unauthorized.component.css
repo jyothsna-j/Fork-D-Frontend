@@ -1,0 +1,8 @@
+.background-image {
+    background-image: url('/assets/401.jpg'); /* Update with your path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+  }

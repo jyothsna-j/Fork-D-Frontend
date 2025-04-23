@@ -1,7 +1,7 @@
 <div class="page-layout">
 <div class = "billing">
-    <mat-stepper>
-        <mat-step>
+    <mat-stepper linear>
+        <mat-step [completed]="isLoggedIn" [editable]="false">
             <ng-template matStepLabel>Sign In</ng-template>
             <div *ngIf="isLoggedIn; else loginPrompt">
                 ✅ Welcome, {{ userName }}!
@@ -12,7 +12,7 @@
               <br>
               <button mat-raised-button matStepperNext [disabled]="!isLoggedIn">Next</button>
         </mat-step>
-        <mat-step>
+        <mat-step [editable]="false" [completed]="isDeliverable === true">
             <ng-template matStepLabel>Enter the delivery address</ng-template>
             <form [formGroup] = "address">
                 <mat-form-field appearance="outline">
@@ -32,7 +32,7 @@
             <br><mat-error *ngIf="isDeliverable==null">Check deliverability before proceeding</mat-error>
             <button mat-raised-button matStepperNext [disabled] = "address.get('address')?.invalid || isDeliverable!=true">Next</button>
         </mat-step>
-        <mat-step>
+        <mat-step [editable]="false">
             <ng-template matStepLabel>Make the payment</ng-template>
             <div class="payment">
               <p>Please make a payment to this QR code before proceeding</p>

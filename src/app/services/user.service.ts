@@ -51,6 +51,10 @@ export class UserService {
     return payload.role;
   }
 
+  isRole(role: string): boolean {
+    return this.getRole() === role;
+  }
+
   getUserId(): string | null {
     const token = this.getToken();
     if (!token) return null;
