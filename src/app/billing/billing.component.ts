@@ -119,8 +119,20 @@ export class BillingComponent {
       }
     }
     console.log(order);
-    this.orderService.postOrder(order);
-    this.router.navigate(['/orders']);
+    this.orderService.postOrder(order).subscribe({
+      next: (response) => {
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          this.router.navigate(['/orders']);
+        }
+      },
+      error: (error: any) => {
+        //TODO
+      }
+    });
+    
   }
 }
 

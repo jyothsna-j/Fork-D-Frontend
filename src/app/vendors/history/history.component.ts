@@ -28,10 +28,19 @@ export class HistoryComponent {
     }
   
     fetchOrders(): void {
-      this.orderService.getOrdersByRestaurantId(this.userId).subscribe((data) => {
-        const allowedStatuses = [ 'OUT_FOR_DELIVERY', 'DELIVERED'];
-    
-        this.orders = data.filter((order: any) => allowedStatuses.includes(order.orderStatus));
+      this.orderService.getOrdersByRestaurantId(this.userId).subscribe({
+        next: (response) => {
+          if(response.body===null){
+            //TODO: make a snackbar
+          }
+          else{
+            const allowedStatuses = [ 'OUT_FOR_DELIVERY', 'DELIVERED'];
+            this.orders = response.body.data.filter((order: any) => allowedStatuses.includes(order.orderStatus));
+          }
+        },
+        error: (error: any) => {
+          //TODO
+        }
       });
     }
   

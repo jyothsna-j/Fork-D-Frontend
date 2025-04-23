@@ -34,18 +34,26 @@ export class OrdersComponent {
 
   refreshOrders(id: any){
     let orders: any[] = [];
-    this.orderService.getOrdersByCustomerId(id).subscribe((data) => {
-      orders = data;
-      const [live, past] = _.partition(orders, (order) =>
-        order.orderStatus !== 'DELIVERED' && order.orderStatus !== 'INVALID_PAYMENT'
-      );
-      
+    this.orderService.getOrdersByCustomerId(id).subscribe({
+      next: (response) =>{
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          orders = response.body.data;
+          const [live, past] = _.partition(orders, (order) =>
+            order.orderStatus !== 'DELIVERED' && order.orderStatus !== 'INVALID_PAYMENT'
+          );
+          this.liveOrders = live;
+          this.pastOrders = past;
 
-      this.liveOrders = live;
-      this.pastOrders = past;
-
-      console.log('Live Orders:', this.liveOrders);
-      console.log('Past Orders:', this.pastOrders);
+          console.log('Live Orders:', this.liveOrders);
+          console.log('Past Orders:', this.pastOrders);
+        }
+      },
+      error: (error: any) => {
+        //TODO
+      }
     });
 
   }
@@ -62,13 +70,18 @@ export class OrdersComponent {
 
   openPanel(order: any): void {
     this.orderService.getRiderDetails(order.orderId).subscribe({
-      next: (data) => {
-        order.riderDetails = data;
-        const url = this.selectedOrder?.riderDetails?.tracking_url;
-        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      next: (response) => {
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          order.riderDetails = response.body.data;
+          const url = this.selectedOrder?.riderDetails?.tracking_url;
+          this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        }
       },
       error: (error) => {
-
+        //TODO
       }
     });
     this.selectedOrder = order;

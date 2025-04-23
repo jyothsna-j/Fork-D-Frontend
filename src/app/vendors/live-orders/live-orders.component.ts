@@ -28,10 +28,19 @@ export class LiveOrdersComponent implements OnInit {
   }
 
   fetchOrders(): void {
-    this.orderService.getOrdersByRestaurantId(this.userId).subscribe((data) => {
-      const allowedStatuses = [ 'ORDER_APPROVED', 'PENDING', 'PREPARING', 'PREPARED'];
-  
-      this.orders = data.filter((order: any) => allowedStatuses.includes(order.orderStatus));
+    this.orderService.getOrdersByRestaurantId(this.userId).subscribe({
+      next: (response) => {
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          const allowedStatuses = [ 'ORDER_APPROVED', 'PENDING', 'PREPARING', 'PREPARED'];
+          this.orders = response.body.data.filter((order: any) => allowedStatuses.includes(order.orderStatus));
+        }
+      },
+      error: (error: any) => {
+        //TODO
+      }
     });
   }
 
@@ -42,8 +51,20 @@ export class LiveOrdersComponent implements OnInit {
   }
 
   updateStatus(order: any): void {
-    this.orderService.updateOrderStatus(order.orderId, order.orderStatus);
-    this.snackBar.open('Order status updated', 'OK', { duration: 2000 })
+    this.orderService.updateOrderStatus(order.orderId, order.orderStatus).subscribe({
+      next: (response) => {
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          this.snackBar.open('Order status updated', 'OK', { duration: 2000 })
+        }
+      },
+      error: (error: any) => {
+        //TODO
+      }
+    });
+    
   }
 
   getStatusColor(status: string): string {

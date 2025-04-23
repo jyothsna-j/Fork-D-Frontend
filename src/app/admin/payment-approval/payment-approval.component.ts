@@ -18,7 +18,15 @@ export class PaymentApprovalComponent {
   ngOnInit(){
     this.orderService.getOrdersForApproval().subscribe({
       next: (response) =>{
-        this.ordersForApproval = response;
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          this.ordersForApproval = response.body.data;
+        }
+      },
+      error: (error: any) => {
+        //TODO
       }
     })
   }
@@ -38,9 +46,19 @@ export class PaymentApprovalComponent {
   }
 
   cancel(orderId: any){
-    this.orderService.updateOrderStatus(orderId, 'INVALID_PAYMENT')
-
-    this.ordersForApproval = this.ordersForApproval.filter(order => order.orderId !== orderId); // This removes it from the array
+    this.orderService.updateOrderStatus(orderId, 'INVALID_PAYMENT').subscribe({
+      next: (response) => {
+        if(response.body===null){
+          //TODO: make a snackbar
+        }
+        else{
+          this.ordersForApproval = this.ordersForApproval.filter(order => order.orderId !== orderId); // This removes it from the array
+        }
+      },
+      error: (error: any) => {
+        //TODO
+      }
+    });
     
   }
   
