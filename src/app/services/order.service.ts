@@ -41,4 +41,9 @@ export class OrderService {
       error: (err) => console.error('Upload Failed', err),
     });
   }
+
+  getRiderDetails(id: any){
+    let URL = this.baseURL +'/' + id + '/rider-details';
+    return this.http.get<any>(URL);
+  }
 }

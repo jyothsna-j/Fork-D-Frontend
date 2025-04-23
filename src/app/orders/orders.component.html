@@ -5,84 +5,132 @@
       <p><strong>Customer:</strong> {{ selectedOrder.user.name }}</p>
       <p><strong>Total Price:</strong> ₹{{ selectedOrder.amount }}</p>
       <h3>Items:</h3>
-      <ul>
-        <li *ngFor="let item of selectedOrder.items">{{ item.dish.dishName }} (x{{ item.quantity }}) - ₹{{item.price}}</li>
-      </ul>
-      <iframe src="https://uen.io/track/m5g78eqnks" ></iframe>
+      <table class = "items-table">
+        <thead>
+          <tr>
+            <th>Dish</th>
+            <th>Qty</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of selectedOrder.items">
+            <td>{{ item.dish.dishName }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>₹{{ item.price }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="selectedOrder.riderDetails">
+        <p><strong>Rider Name:</strong> {{ selectedOrder.riderDetails.rider_name }}</p>
+        <p><strong>Rider Contact Number:</strong> {{ selectedOrder.riderDetails.rider_contact }}</p>
+        <p><strong>Tracking URL:</strong></p>
+        <iframe [src]="safeUrl"  width="100%" height="500" frameborder="0"></iframe>
+      </div>
+      
     </div>
     <button mat-raised-button color="warn" (click)="closePanel()">Close</button>
   </mat-sidenav>
 
-<h1>Current Orders</h1>
-<table mat-table [dataSource] = "liveOrders" class="mat-elevation-z8">
-    <!-- Order Id Column -->
-    <ng-container matColumnDef="orderId">
-        <th mat-header-cell *matHeaderCellDef>Order Id</th>
-        <td mat-cell *matCellDef="let order">{{ order.orderId }}</td>
-    </ng-container>
-
-      <!-- Restaurant Name Column -->
-      <ng-container matColumnDef="restaurantName">
-        <th mat-header-cell *matHeaderCellDef>Restaurant Name</th>
-        <td mat-cell *matCellDef="let order">{{ order.restaurant.restaurantName }}</td>
+  <div class="main-content">
+    <h1>Current Orders</h1>
+    <table mat-table [dataSource] = "liveOrders" class="mat-elevation-z8">
+      <!-- Order Id Column -->
+      <ng-container matColumnDef="orderId">
+          <th mat-header-cell *matHeaderCellDef>Order Id</th>
+          <td mat-cell *matCellDef="let order">{{ order.orderId }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="amount">
-        <th mat-header-cell *matHeaderCellDef>Amount</th>
-        <td mat-cell *matCellDef="let order">{{ order.amount }}</td>
+        <!-- Restaurant Name Column -->
+        <ng-container matColumnDef="restaurantName">
+          <th mat-header-cell *matHeaderCellDef>Restaurant Name</th>
+          <td mat-cell *matCellDef="let order">{{ order.restaurant.restaurantName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Amount</th>
+          <td mat-cell *matCellDef="let order">{{ order.amount }}</td>
+        </ng-container>
+
+        <!-- Order Date -->
+        <ng-container matColumnDef="orderDate">
+          <th mat-header-cell *matHeaderCellDef>Order Date</th>
+          <td mat-cell *matCellDef="let order">{{ order.orderDate | date:'yyyy-MM-dd' }} {{order.orderDate | date:'HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let order">
+            <mat-chip [color]="getStatusColor(order.orderStatus)">{{ order.orderStatus }}</mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dstatus">
+          <th mat-header-cell *matHeaderCellDef>Delivery Status</th>
+          <td mat-cell *matCellDef="let order">
+            <mat-chip [color]="getStatusColor(order.orderStatus)">{{ order.deliveryStatus }}</mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="trackOrder">
+          <th mat-header-cell *matHeaderCellDef>Track</th>
+          <td mat-cell *matCellDef="let order">
+            <button mat-raised-button (click) = "openPanel(order)"> Track Order </button>
+          </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <h1>Past Orders</h1>
+    <table mat-table [dataSource] = "pastOrders" class="mat-elevation-z8">
+      <!-- Order Id Column -->
+      <ng-container matColumnDef="orderId">
+          <th mat-header-cell *matHeaderCellDef>Order Id</th>
+          <td mat-cell *matCellDef="let order">{{ order.orderId }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let order">
-          <mat-chip [color]="getStatusColor(order.orderStatus)">{{ order.orderStatus }}</mat-chip>
-        </td>
-      </ng-container>
+        <!-- Restaurant Name Column -->
+        <ng-container matColumnDef="restaurantName">
+          <th mat-header-cell *matHeaderCellDef>RestaurantName</th>
+          <td mat-cell *matCellDef="let order">{{ order.restaurant.restaurantName }}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="trackOrder">
-        <th mat-header-cell *matHeaderCellDef>Track</th>
-        <td mat-cell *matCellDef="let order">
-          <button mat-raised-button (click) = "openPanel(order)"> Track Order </button>
-        </td>
-      </ng-container>
-    
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Amount</th>
+          <td mat-cell *matCellDef="let order">{{ order.amount }}</td>
+        </ng-container>
 
-<h1>Past Orders</h1>
-<table mat-table [dataSource] = "pastOrders" class="mat-elevation-z8">
-    <!-- Order Id Column -->
-    <ng-container matColumnDef="orderId">
-        <th mat-header-cell *matHeaderCellDef>Order Id</th>
-        <td mat-cell *matCellDef="let order">{{ order.orderId }}</td>
-    </ng-container>
+        <!-- Order Date -->
+        <ng-container matColumnDef="orderDate">
+          <th mat-header-cell *matHeaderCellDef>Order Date</th>
+          <td mat-cell *matCellDef="let order">{{ order.orderDate | date:'yyyy-MM-dd' }} {{order.orderDate | date:'HH:mm' }}</td>
+        </ng-container>
 
-      <!-- Restaurant Name Column -->
-      <ng-container matColumnDef="restaurantName">
-        <th mat-header-cell *matHeaderCellDef>RestaurantName</th>
-        <td mat-cell *matCellDef="let order">{{ order.restaurant.restaurantName }}</td>
-      </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let order">
+            <mat-chip [color]="getStatusColor(order.orderStatus)">{{ order.orderStatus }}</mat-chip>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="amount">
-        <th mat-header-cell *matHeaderCellDef>Amount</th>
-        <td mat-cell *matCellDef="let order">{{ order.amount }}</td>
-      </ng-container>
+        <ng-container matColumnDef="dstatus">
+          <th mat-header-cell *matHeaderCellDef>Delivery Status</th>
+          <td mat-cell *matCellDef="let order">
+            <mat-chip [color]="getStatusColor(order.orderStatus)">{{ order.deliveryStatus }}</mat-chip>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let order">
-          <mat-chip [color]="getStatusColor(order.orderStatus)">{{ order.orderStatus }}</mat-chip>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="trackOrder">
+          <th mat-header-cell *matHeaderCellDef>Track</th>
+          <td mat-cell *matCellDef="let order">
+            <button mat-raised-button (click) = "openPanel(order)"> View Order </button>
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="trackOrder">
-        <th mat-header-cell *matHeaderCellDef>Track</th>
-        <td mat-cell *matCellDef="let order">
-          <button mat-raised-button (click) = "openPanel(order)"> View Order </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</mat-sidenav-container>

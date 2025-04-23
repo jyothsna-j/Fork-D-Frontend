@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { OrderService } from '../services/order.service';
 import _ from 'lodash';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-orders',
@@ -10,6 +11,8 @@ import _ from 'lodash';
 })
 export class OrdersComponent {
 
+  safeUrl!: SafeResourceUrl;
+
   orders: any[] = [];
   selectedStatus: string = '';
   selectedOrder: any | null = null;
@@ -17,9 +20,9 @@ export class OrdersComponent {
 
   liveOrders: any[] = [];
   pastOrders: any[] = []
-  displayedColumns = ['orderId', 'restaurantName', 'amount', 'status', 'trackOrder']
+  displayedColumns = ['orderId', 'restaurantName', 'amount', 'orderDate', 'status', 'dstatus', 'trackOrder']
 
-  constructor(private userService: UserService, private orderService: OrderService) {}
+  constructor(private userService: UserService, private orderService: OrderService, private sanitizer: DomSanitizer) {}
 
   ngOnInit(){
     const userId = this.userService.getUserId();
@@ -33,7 +36,10 @@ export class OrdersComponent {
     let orders: any[] = [];
     this.orderService.getOrdersByCustomerId(id).subscribe((data) => {
       orders = data;
-      const [live, past] = _.partition(orders, (order) => order.orderStatus !== 'DELIVERED');
+      const [live, past] = _.partition(orders, (order) =>
+        order.orderStatus !== 'DELIVERED' && order.orderStatus !== 'INVALID_PAYMENT'
+      );
+      
 
       this.liveOrders = live;
       this.pastOrders = past;
@@ -55,6 +61,16 @@ export class OrdersComponent {
   }
 
   openPanel(order: any): void {
+    this.orderService.getRiderDetails(order.orderId).subscribe({
+      next: (data) => {
+        order.riderDetails = data;
+        const url = this.selectedOrder?.riderDetails?.tracking_url;
+        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      },
+      error: (error) => {
+
+      }
+    });
     this.selectedOrder = order;
     this.isPanelOpen = true;
   }

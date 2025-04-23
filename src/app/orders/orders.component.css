@@ -1,16 +1,27 @@
 .sidenav-container {
-    height: 100vh;
-    display: flex;
-  }
+  overflow-y: auto;
+}
   
-  .details-panel {
-    padding: 20px;
-  }
-  
-  table{
-    margin: 3%;
-  }
-  .content {
-    padding: 20px;
-    flex-grow: 1;
-  }
+.details-panel {
+  position: fixed;
+  padding: 20px;
+  padding-top: 80px;
+}
+.main-content{
+  padding: 20px;;
+}
+table{
+  width:100%;
+}
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.items-table th, td {
+  padding: 6px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
