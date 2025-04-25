@@ -29,7 +29,9 @@
                 <button mat-button (click) = "checkDeliverability(address.get('address'))">Check Deliverability</button>
             </form>
             <br><mat-error *ngIf="isDeliverable==false">Cant deliver to this location</mat-error>
-            <br><mat-error *ngIf="isDeliverable==null">Check deliverability before proceeding</mat-error>
+            <br>
+            <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+            <mat-error *ngIf="isDeliverable==null && !loading==true">Check deliverability before proceeding</mat-error>
             <button mat-raised-button matStepperNext [disabled] = "address.get('address')?.invalid || isDeliverable!=true">Next</button>
         </mat-step>
         <mat-step [editable]="false">

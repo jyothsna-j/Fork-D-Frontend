@@ -38,7 +38,7 @@ export class LoginComponent {
               });
             }
             if(role=='VENDOR'){
-              this.router.navigate(['vendor/edit']).then(() => {
+              this.router.navigate(['vendor/live-orders']).then(() => {
                 window.location.reload();
               });
             }

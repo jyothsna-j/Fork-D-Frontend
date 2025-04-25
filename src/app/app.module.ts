@@ -29,6 +29,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
@@ -90,6 +91,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     MatDialogModule,
     MatMenuModule,
     MatTooltipModule,
+    MatProgressSpinnerModule,
     ReactiveFormsModule
   ],
   providers: [

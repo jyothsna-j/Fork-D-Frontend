@@ -17,6 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class BillingComponent {
 
   private _snackBar = inject(MatSnackBar);
+  loading = false;
 
   //user values
   userName: any;
@@ -67,11 +68,12 @@ export class BillingComponent {
   }
 
   checkDeliverability(address: any){
+    this.loading = true;
     this.selectedPickup = this.dropLocations.find(loc => loc.key === address.value);
     if(this.selectedPickup){
       console.log(this.restaurantAddress)
       var payload = {
-        store_id: 89,
+        store_id: this.restaurantId,
         pickupDetails: {
           latitude: this.restaurantAddress.latitude,
 		      longitude: this.restaurantAddress.longitude
@@ -84,13 +86,15 @@ export class BillingComponent {
       this.uEngageService.getServiceability(payload).subscribe({
         next:(response) => {
           if(response.body){
+            this.loading = false;
             this.deliveryCharge = response.body.payouts.total;
             this.isDeliverable=true
           }
         },
         error:(error) => {
+          this.loading = false;
           console.log(error);
-          this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
+          this._snackBar.open(error.message, 'Dismiss', {duration: 3000})
         }
       })
     }
@@ -112,7 +116,8 @@ export class BillingComponent {
       pickupAddress: {
         address: this.restaurantAddress.address,
         latitude: this.restaurantAddress.latitude,
-		    longitude: this.restaurantAddress.longitude
+		    longitude: this.restaurantAddress.longitude,
+        contactNumber: this.restaurantAddress.contactNumber
       },
       dropAddress: {
         address: this.selectedPickup.name,
