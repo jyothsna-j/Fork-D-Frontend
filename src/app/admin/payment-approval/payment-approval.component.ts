@@ -36,6 +36,7 @@ export class PaymentApprovalComponent {
 
   approve(orderId: any){
     const order = this.ordersForApproval.find(o => o.orderId === orderId);
+    order.pickupAddress.contactNumber = String(order.pickupAddress.contactNumber)
     this.uEngageService.createTask(order).subscribe({
       next: (response) => {
         console.log(response);

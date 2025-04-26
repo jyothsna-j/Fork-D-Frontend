@@ -146,7 +146,9 @@ export class BillingComponent {
 
 function itemsConverter(items: any) {
 
-  const orderedItems: any[] = Object.keys(items).map((key, index) => ({
+  const orderedItems: any[] = Object.keys(items)
+  .filter((key) => items[key].quantity > 0) 
+  .map((key, index) => ({
     orderedItemId: index + 1,
     dish: { dishId: items[key].dishId },
     price: items[key].price,
