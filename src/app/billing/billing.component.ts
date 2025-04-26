@@ -101,6 +101,7 @@ export class BillingComponent {
   }
 
   paymentMade(){
+    console.log(this.restaurantAddress);
     const orderDate = new Date().toISOString().slice(0, 19); // "yyyy-MM-ddTHH:mm:ss"
     var order = {
       user: {

@@ -42,6 +42,11 @@ export class LoginComponent {
                 window.location.reload();
               });
             }
+            if(role=='ADMIN'){
+              this.router.navigate(['admin/approve']).then(() => {
+                window.location.reload();
+              });
+            }
           }
         },
         error: (error) => {
