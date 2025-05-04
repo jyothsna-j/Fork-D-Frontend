@@ -30,8 +30,10 @@
                 <mat-card class="card" *ngFor="let dish of categorizedDishes[category.key]">
                     <mat-grid-list cols="2" rowHeight="11:1">
                         <mat-grid-tile>
-                                {{dish.dishName}}<br>
-                                ₹{{dish.price}}
+                            <div style="text-align: center;">
+                                <div>{{ dish.dishName }}</div>
+                                <div>₹{{ dish.price }}</div>
+                            </div>
                         </mat-grid-tile>
                         <mat-grid-tile>
                             <div class="cart-buttons">

@@ -12,6 +12,7 @@ import { UserService } from 'src/app/services/user.service';
 export class LiveOrdersComponent implements OnInit {
 
   private _snackBar = inject(MatSnackBar);
+  audio = new Audio();
   
   userId:any;
   orders: any[] = [];
@@ -31,6 +32,7 @@ export class LiveOrdersComponent implements OnInit {
   }
 
   fetchOrders(): void {
+    let prevLen = this.orders.length;
     this.orderService.getOrdersByRestaurantId(this.userId).subscribe({
       next: (response) => {
         if(response.body===null){
@@ -39,11 +41,25 @@ export class LiveOrdersComponent implements OnInit {
         else{
           const allowedStatuses = [ 'ORDER_APPROVED', 'PENDING', 'PREPARING', 'PREPARED'];
           this.orders = response.body.data.filter((order: any) => allowedStatuses.includes(order.orderStatus));
+          let currLen = this.orders.length;
+          if(currLen>prevLen){
+            this.playNotification();
+          }
         }
       },
       error: (error: any) => {
         this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000 });
       }
+    });
+  }
+
+  playNotification() {
+    this.audio.src = 'assets/new-order.mp3';
+    this.audio.load();
+    this.audio.play().then(() => {
+      console.log('Audio played successfully');
+    }).catch(err => {
+      console.error('Audio play failed', err);
     });
   }
 
