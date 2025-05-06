@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrderService } from 'src/app/services/order.service';
 import { UEngageServiceService } from 'src/app/services/u-engage-service.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-payment-approval',
@@ -13,12 +14,20 @@ export class PaymentApprovalComponent {
   private _snackBar = inject(MatSnackBar);
 
   ordersForApproval : any[] = [];
+  allowOrders!: boolean;
 
   displayedColumns = ['orderId', 'username', 'restaurantName', 'orderDate', 'orderTime', 'amount', 'approveButton'];
 
-  constructor(private orderService: OrderService, private uEngageService : UEngageServiceService) {}
+  constructor(private orderService: OrderService, private uEngageService : UEngageServiceService, private userService: UserService) {}
 
   ngOnInit(){
+    this.userService.getToggleStatus().subscribe({
+      next: (status) => {
+        this.allowOrders = status.data;
+      },
+      error: () => alert('Failed to fetch status')
+    });
+
     this.orderService.getOrdersForApproval().subscribe({
       next: (response) =>{
         if(response.body===null){
@@ -34,6 +43,19 @@ export class PaymentApprovalComponent {
     })
   }
 
+  onToggle(event: any) {
+    const newValue = event.checked;
+    this.allowOrders = newValue;
+
+    this.userService.setToggleStatus(newValue).subscribe({
+      next: () => console.log('Saved successfully'),
+      error: (err) => {
+        this._snackBar.open(err.error.message, 'Dismiss', {duration: 3000})
+        this.allowOrders = !newValue;
+      }
+    });
+  }
+
   approve(orderId: any){
     const order = this.ordersForApproval.find(o => o.orderId === orderId);
     order.pickupAddress.contactNumber = String(order.pickupAddress.contactNumber)
@@ -44,7 +66,7 @@ export class PaymentApprovalComponent {
         this._snackBar.open('Processed Successfully', 'Dismiss', {duration: 3000});
       },
       error: (error) =>{
-
+        this._snackBar.open(error.error.message, 'Dismiss', {duration: 3000})
       }
     })
   }

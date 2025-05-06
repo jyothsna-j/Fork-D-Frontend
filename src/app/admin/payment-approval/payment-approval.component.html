@@ -1,4 +1,11 @@
 <div class="content">
+    <div class="toggle-approval">
+        <mat-slide-toggle
+            [checked]="allowOrders"
+             (change)="onToggle($event)">
+            Enable Orders
+        </mat-slide-toggle>
+    </div>
     <h1>Orders To Approve</h1>
     <table mat-table [dataSource] = "ordersForApproval" class = "mat-elevation-z8">
         

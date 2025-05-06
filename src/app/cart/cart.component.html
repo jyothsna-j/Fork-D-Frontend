@@ -31,22 +31,26 @@
             </div>
         </mat-card>
         <mat-card class="card" style="font-size:smaller;">
-          <div class="dish-row">
-            <div>Delivery Fee</div>
-            <ng-container *ngIf="deliveryCharge === 0; else showDeliveryCharge">
-                <button mat-icon-button matTooltip="You need to enter your drop location"
-                    class="tiny-icon-btn" color="warn">
-                  <mat-icon>info</mat-icon>
-                </button>
-            </ng-container>
-            <ng-template #showDeliveryCharge>
-                <div>₹{{ deliveryCharge }}</div>
-            </ng-template>
-          </div>
-          <div class="dish-row">
-            <div>Platform Fee</div>
-            <div>₹{{ platFormFee }}</div>
-        </div>
+            <div class="dish-row">
+                <div>Delivery Fee</div>
+                <ng-container *ngIf="deliveryCharge === 0; else showDeliveryCharge">
+                    <button mat-icon-button matTooltip="You need to enter your drop location"
+                        class="tiny-icon-btn" color="warn">
+                        <mat-icon>info</mat-icon>
+                    </button>
+                </ng-container>
+                <ng-template #showDeliveryCharge>
+                    <div>₹{{ deliveryCharge }}</div>
+                </ng-template>
+            </div>
+            <div class="dish-row">
+                <div>Platform Fee</div>
+                <div>₹{{ platFormFee }}</div>
+            </div>
+            <div class="dish-row" *ngIf="gstCharge!=0">
+                <div>GST Fee</div>
+                <div>₹{{ gstCharge }}</div>
+            </div>
         </mat-card>
         <mat-card class="card">
             <div class="dish-row">

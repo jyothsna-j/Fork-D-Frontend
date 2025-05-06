@@ -11,15 +11,17 @@ export class CartComponent {
   restaurantId: any;
   cartData: { [key: string]: any } = {};
   isCartEmpty: boolean = true;
+
   prices: { [key: string]: number } = {};
   totalPrice: number = 0; 
   deliveryCharge: any;
+  gstCharge: number = 0; 
   
   @Input() set data(value: any) {
     this.deliveryCharge = value;
     this.handleChange();
   }
-  platFormFee = 2;
+  platFormFee = 10;
 
   @Output() childEvent = new EventEmitter<number>();
 
@@ -52,7 +54,11 @@ export class CartComponent {
 
   handleChange(){
     this.prices = _.mapValues(this.cartData, (cartItem) => cartItem.price*cartItem.quantity);
-    this.totalPrice = _.reduce(_.values(this.prices), (sum, price) => sum + price, 0) + this.deliveryCharge + this.platFormFee;
+    let totalItePr = _.reduce(_.values(this.prices), (sum, price) => sum + price, 0)
+    if(this.restaurantId==2||this.restaurantId==4){
+      this.gstCharge = totalItePr * 0.05;
+    }
+    this.totalPrice = _.round(totalItePr + this.deliveryCharge + this.platFormFee + this.gstCharge, 2);
     this.childEvent.emit(this.totalPrice);
   }
 }

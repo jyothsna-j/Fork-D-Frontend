@@ -35,6 +35,7 @@ export class BillingComponent {
   dropLocations: DropPoint[] = DropLocations;
   deliveryCharge: any = 0;
   isDeliverable : boolean | null = null;
+  isOrderApprovable! : boolean;
 
   constructor( private userService: UserService, private fb: FormBuilder, private router: Router, private restaurantService: RestaurantService,
                 private orderService: OrderService, private uEngageService: UEngageServiceService) {
@@ -49,6 +50,13 @@ export class BillingComponent {
 
     this.isLoggedIn = this.userService.isLoggedIn();
     this.userName = this.userService.getUsername();
+
+    this.userService.getToggleStatus().subscribe({
+      next: (status) => {
+        this.isOrderApprovable = status.data;
+      },
+      error: () => alert('Failed to fetch status')
+    });
     
     this.restaurantService.getRestaurantAddress(this.restaurantId).subscribe({
       next : (response) =>{
@@ -93,6 +101,7 @@ export class BillingComponent {
         },
         error:(error) => {
           this.loading = false;
+          this.isDeliverable=false;
           console.log(error);
           this._snackBar.open(error.message, 'Dismiss', {duration: 3000})
         }

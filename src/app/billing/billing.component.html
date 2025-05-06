@@ -12,7 +12,7 @@
               <br>
               <button mat-raised-button matStepperNext [disabled]="!isLoggedIn">Next</button>
         </mat-step>
-        <mat-step [editable]="false" [completed]="isDeliverable === true">
+        <mat-step [editable]="false" [completed]="isDeliverable === true && isOrderApprovable === true">
             <ng-template matStepLabel>Enter the delivery address</ng-template>
             <form [formGroup] = "address">
                 <mat-form-field appearance="outline">
@@ -26,13 +26,14 @@
                       Drop location is required
                     </mat-error>
                 </mat-form-field>
-                <button mat-button (click) = "checkDeliverability(address.get('address'))">Check Deliverability</button>
+                <button mat-raised-button (click) = "checkDeliverability(address.get('address'))" style="margin:7px;">Check Deliverability</button>
             </form>
             <br><mat-error *ngIf="isDeliverable==false">Cant deliver to this location</mat-error>
             <br>
             <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
             <mat-error *ngIf="isDeliverable==null && !loading==true">Check deliverability before proceeding</mat-error>
-            <button mat-raised-button matStepperNext [disabled] = "address.get('address')?.invalid || isDeliverable!=true">Next</button>
+            <mat-error *ngIf="isOrderApprovable === false">Sorry we are not available now, please order again later</mat-error>
+            <button mat-raised-button matStepperNext [disabled] = "address.get('address')?.invalid || isDeliverable!=true || isOrderApprovable != true">Next</button>
         </mat-step>
         <mat-step [editable]="false">
             <ng-template matStepLabel>Make the payment</ng-template>

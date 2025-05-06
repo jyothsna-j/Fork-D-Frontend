@@ -30,6 +30,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail.component';
@@ -94,6 +95,7 @@ import { AllOrdersComponent } from './admin/all-orders/all-orders.component';
     MatMenuModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+    MatSlideToggleModule,
     ReactiveFormsModule
   ],
   providers: [

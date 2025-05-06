@@ -10,6 +10,7 @@ import { ApiResponse } from '../_utils/api-response';
 export class UserService {
 
   private baseURL: string =  environment.NG_APP_BASE_URL + 'auth';
+  baseUrl: any;
 
   constructor(private http: HttpClient) { }
 
@@ -24,6 +25,17 @@ export class UserService {
     let URL: string = this.baseURL + '/login'
     localStorage.setItem('user', username);
     return this.http.post<ApiResponse<String>>(URL, { username, password }, {observe: 'response'})
+  }
+
+  getToggleStatus(): Observable<any> {
+    let URL: string = this.baseURL + '/status';
+    return this.http.get<any>(URL);
+  }
+
+  // Set user's toggle status explicitly
+  setToggleStatus(value: boolean): Observable<boolean> {
+    let URL: string = this.baseURL + '/status';
+    return this.http.post<any>(URL, value);
   }
 
   setToken(token: string) {
