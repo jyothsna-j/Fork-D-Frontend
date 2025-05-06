@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import _ from 'lodash';
 import { OrderService } from 'src/app/services/order.service';
 
 @Component({
@@ -31,7 +32,7 @@ export class AllOrdersComponent {
           this._snackBar.open('Orders not found', 'Dismiss', {duration: 3000})
         }
         else{
-          this.orders = response.body.data;
+          this.orders = _.sortBy(response.body.data, 'orderId');
         }
       },
       error: (error: any) => {
