@@ -46,6 +46,7 @@ import { AddDishDialogComponent } from './_modals/add-dish-dialog/add-dish-dialo
 import { PaymentApprovalComponent } from './admin/payment-approval/payment-approval.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { AllOrdersComponent } from './admin/all-orders/all-orders.component';
 
 
 @NgModule({
@@ -64,7 +65,8 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     AddDishDialogComponent,
     PaymentApprovalComponent,
     ForbiddenComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
+    AllOrdersComponent
   ],
   imports: [
     BrowserModule,

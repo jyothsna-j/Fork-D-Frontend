@@ -13,6 +13,11 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
+  getOrders() : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL: string = this.baseURL;
+    return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
+  }
+
   getOrdersByCustomerId(userId: any) : Observable<HttpResponse<ApiResponse<any>>>{
     let URL: string = this.baseURL + '/user/' + userId;
     return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
