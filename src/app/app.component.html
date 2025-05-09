@@ -17,6 +17,11 @@
         </div>
     </div>
 </mat-toolbar>
+<mat-toolbar class = "vendor-toolbar">
+  <a style="color:red;text-decoration: none;font-size: 0.9rem;font-weight: normal;">
+    *Ordering is only open from 11 to 3 and 6 to 9
+  </a>
+</mat-toolbar>
 <mat-toolbar class = "vendor-toolbar" *ngIf = "role==='VENDOR'">
   <a mat-button class="fancy-link" routerLink="/vendor/edit">Edit Restaurant Details | </a>
   <a mat-button class="fancy-link" routerLink="/vendor/history">View Past Orders | </a>
@@ -24,6 +29,7 @@
 </mat-toolbar>
 <mat-toolbar class = "vendor-toolbar" *ngIf = "role==='ADMIN'">
   <a mat-button class="fancy-link" routerLink="/admin/approve">Approve Orders | </a>
-  <a mat-button class="fancy-link" routerLink="/admin/orders">View all orders</a>
+  <a mat-button class="fancy-link" routerLink="/admin/users">View All Users | </a>
+  <a mat-button class="fancy-link" routerLink="/admin/orders">View All Orders</a>
 </mat-toolbar>
 <router-outlet></router-outlet>

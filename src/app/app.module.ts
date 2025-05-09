@@ -48,6 +48,7 @@ import { PaymentApprovalComponent } from './admin/payment-approval/payment-appro
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { AllOrdersComponent } from './admin/all-orders/all-orders.component';
+import { AllUsersComponent } from './admin/all-users/all-users.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { AllOrdersComponent } from './admin/all-orders/all-orders.component';
     PaymentApprovalComponent,
     ForbiddenComponent,
     UnauthorizedComponent,
-    AllOrdersComponent
+    AllOrdersComponent,
+    AllUsersComponent
   ],
   imports: [
     BrowserModule,

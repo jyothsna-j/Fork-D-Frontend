@@ -27,6 +27,11 @@ export class UserService {
     return this.http.post<ApiResponse<String>>(URL, { username, password }, {observe: 'response'})
   }
 
+  getUsers() : Observable<HttpResponse<ApiResponse<any>>>{
+    let URL:string = this.baseURL + '/users';
+    return this.http.get<ApiResponse<any>>(URL, {observe: 'response'});
+  }
+
   getToggleStatus(): Observable<any> {
     let URL: string = this.baseURL + '/status';
     return this.http.get<any>(URL);

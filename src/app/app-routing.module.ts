@@ -15,6 +15,7 @@ import { authGuard } from './auth.guard';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { AllOrdersComponent } from './admin/all-orders/all-orders.component';
+import { AllUsersComponent } from './admin/all-users/all-users.component';
 
 const routes: Routes = [
   { path: 'restaurants', component: LandingPageComponent }, 
@@ -32,6 +33,7 @@ const routes: Routes = [
 
   { path: 'admin/approve', component: PaymentApprovalComponent, canActivate: [authGuard],  data: { role: 'ADMIN' }},
   { path: 'admin/orders', component: AllOrdersComponent, canActivate: [authGuard], data: { role: 'ADMIN' }},
+  { path: 'admin/users', component: AllUsersComponent },
 
   { path: 'unauthorized', component: UnauthorizedComponent }, 
   { path: 'forbidden', component: ForbiddenComponent }, 
