@@ -53,6 +53,18 @@
                 <p class ="restaurant-cuisines">{{restaurant.cuisine}}</p>
             </div>
         </mat-card>
+        <mat-card class = "card" *ngFor="let rest of nbRests">
+            <div class="restaurant-image">
+                <img [src]="rest.restaurantImage" class="restaurant-pics"/>
+            </div>
+            <button mat-button class = "static-res-button">
+               {{rest.text}}
+            </button>
+            <div class = "image-info">
+                <h2>{{rest.restaurantName}}</h2>
+                <p class ="restaurant-cuisines">{{rest.restaurantCuisine}}</p>
+            </div>
+        </mat-card>
     </div>
     <button (click)="scrollRight()" class="nav-btn right-btn"><mat-icon>keyboard_arrow_right</mat-icon></button>
 </section>

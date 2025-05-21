@@ -66,6 +66,25 @@ export class LandingPageComponent {
     this.scrollContainer.nativeElement.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
 
-  
-
+  //RESTAURANTS NOT ONBOARDED
+  nbRests = [
+    {
+      restaurantName: "Dhaba UP16",
+      restaurantImage: "assets/dhabaup16.jpg",
+      restaurantCuisine: "North Indian, Chinese",
+      text: "NOT ACCEPTING ORDERS"
+    },
+    {
+      restaurantName: "Gypsy Cafe",
+      restaurantImage: "assets/gypsycafe.jpg",
+      restaurantCuisine: "Cafe, Italian, Fast Food",
+      text: "COMING SOON"
+    },
+    {
+      restaurantName: "Kulcha Kulture",
+      restaurantImage: "assets/kulchakulture.jpg",
+      restaurantCuisine: "North Indian",
+      text: "COMING SOON"
+    },
+  ]
 }
