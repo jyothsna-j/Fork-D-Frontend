@@ -9,7 +9,7 @@
   justify-content: flex-start;
   /* justify-content: center; */
   /* align-items: center; */
-  background-image: url(users-bg.3ffaae9b85fe7ca3.jpg);
+  background-image: url('src/assets/users-bg.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
