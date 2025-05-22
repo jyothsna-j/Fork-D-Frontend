@@ -14,7 +14,6 @@
   background-position: center;
   background-attachment: fixed; /* Keeps the background fixed on scroll */
   overflow-y:scroll;
-  padding-top: 100px;
   box-sizing: border-box;
 
 }
@@ -26,8 +25,8 @@
 } */
 .content {
   position: relative;
-  display: flex;
-  justify-content: center;
+  margin:auto;
+  margin-top: 200px;
   padding: 20px;
 }
   
