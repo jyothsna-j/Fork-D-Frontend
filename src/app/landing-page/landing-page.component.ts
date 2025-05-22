@@ -72,7 +72,7 @@ export class LandingPageComponent {
       restaurantName: "Dhaba UP16",
       restaurantImage: "assets/dhabaup16.jpg",
       restaurantCuisine: "North Indian, Chinese",
-      text: "NOT ACCEPTING ORDERS"
+      text: "NOT ACCEPTING ORDERS CURRENTLY"
     },
     {
       restaurantName: "Gypsy Cafe",
